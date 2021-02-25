@@ -41,10 +41,44 @@ input {
 }
 
 button {
+  display: grid;
+  place-content: center;
   font-size: inherit;
   padding: .5rem 0;
   color: white;
   background-color: var(--primary-color);
   border: 0;
   border-radius: 4px;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  --circle-width: .2em;
+  font-size: 2rem;
+
+  display: inline-block;
+  width: calc(1em + var(--circle-width));
+  height: calc(1em + var(--circle-width));
+  border-radius: 50%;
+  border: var(--circle-width) solid transparent;
+  border-top: var(--circle-width) solid var(--spinner-color, var(--primary-color));
+  animation: spin 1s infinite linear;
+
+  &-narrow {
+    @extend .spinner;
+    --circle-width: .1em;
+  }
 }

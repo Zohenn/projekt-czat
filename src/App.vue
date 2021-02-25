@@ -1,19 +1,31 @@
 <template>
   <Navbar/>
   <main>
-    <router-view/>
+    <PromiseHandler :promise='authPromise'>
+      <router-view/>
+    </PromiseHandler>
   </main>
 </template>
 
 <script lang='ts'>
   import { defineComponent } from 'vue';
   import Navbar from '@/components/Navbar.vue';
+  import PromiseHandler from "@/components/PromiseHandler.vue";
 
   export default defineComponent({
     name: 'App',
     components: {
+      PromiseHandler,
       Navbar
-    }
+    },
+    data() {
+      return {
+        // authPromise: this.$store.dispatch('auth/checkAuthState'),
+        authPromise: new Promise((resolve) => {
+          setTimeout(() => resolve(), 0);
+        })
+      }
+    },
   })
 </script>
 

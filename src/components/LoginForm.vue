@@ -2,13 +2,16 @@
   <form class='d-flex flex-column' @submit='login'>
     <div class='form-row'>
       <label for='email' class='d-none'>Adres email</label>
-      <input id='email' placeholder='Adres email' v-model='email'/>
+      <input id='email' placeholder='Adres email' v-model='model.email'/>
     </div>
     <div class='form-row'>
       <label for='password' class='d-none'>Hasło</label>
-      <input id='password' placeholder='Hasło' v-model='password'/>
+      <input id='password' placeholder='Hasło' v-model='model.password'/>
     </div>
-    <button type='submit'>Zaloguj się</button>
+    <button type='submit' style='font-size: 1.1rem;'>
+      <span v-if='loading' class='spinner-narrow' style='--spinner-color: white; font-size: 1.1rem; --circle-width: .2rem'></span>
+      <span v-else>Zaloguj się</span>
+    </button>
     <!-- todo: validation -->
   </form>
 </template>
@@ -23,16 +26,23 @@
 
   export default defineComponent({
     name: "LoginForm",
-    data(): LoginFormModel {
+    data() {
       return {
-        email: '',
-        password: '',
+        loading: true,
+        model: {
+          email: '',
+          password: '',
+        } as LoginFormModel
       };
     },
     methods: {
       login(e: Event) {
         e.preventDefault();
-        this.$store.dispatch('auth/signIn', { email: this.email, password: this.password });
+        this.loading = !this.loading;
+        return;
+        // eslint-disable-next-line no-unreachable
+        this.loading = true;
+        this.$store.dispatch('auth/signIn', { email: this.model.email, password: this.model.password }).finally(() => this.loading = false);
       }
     }
   })
