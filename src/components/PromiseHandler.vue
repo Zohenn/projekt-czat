@@ -1,10 +1,10 @@
 <template>
-  <div v-if='loading'>
+  <div v-if='loading' v-bind='$attrs'>
     <span class='spinner-narrow'></span>
   </div>
   <template v-else>
     <slot v-if='success'></slot>
-    <slot v-if='error' name='error'></slot>
+    <slot v-else name='error'></slot>
   </template>
 </template>
 
@@ -13,6 +13,7 @@
 
   export default defineComponent({
     name: "PromiseHandler",
+    inheritAttrs: false,
     props: {
       promise: {
         type: Promise,
