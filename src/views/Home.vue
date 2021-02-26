@@ -1,9 +1,7 @@
 <template>
-  <div id='entry'>
-    <div class='d-flex flex-column'>
-      <div v-if='isSignedIn'>{{ $store.state.auth.user.displayName }}</div>
-      <LoginForm v-else/>
-    </div>
+  <div id='home'>
+    <div v-if='isSignedIn'>{{ $store.state.auth.user.displayName }}</div>
+    <LoginForm v-else/>
   </div>
 </template>
 
@@ -24,7 +22,7 @@
 </script>
 
 <style scoped lang='scss'>
-  #entry {
+  #home {
     width: 100%;
     height: 100%;
     display: flex;

@@ -2,15 +2,29 @@
   <div id='navbar'>
     <div id='navbar-content'>
       <img src='../assets/logo2.png' alt='Logo' id='logo'/>
+      <button v-if='isSignedIn' class='icon-btn' @click='signOut'>
+        <span class='material-icons'>logout</span>
+      </button>
     </div>
   </div>
 </template>
 
 <script lang='ts'>
   import { defineComponent } from 'vue';
+  import { createNamespacedHelpers } from "vuex";
+
+  const { mapGetters } = createNamespacedHelpers('auth');
 
   export default defineComponent({
-    name: "Navbar"
+    name: "Navbar",
+    computed: {
+      ...mapGetters(['isSignedIn']),
+    },
+    methods: {
+      signOut() {
+        this.$store.dispatch('auth/signOut');
+      }
+    }
   })
 </script>
 
@@ -24,9 +38,12 @@
 
   #navbar-content {
     display: flex;
-    width: 768px;
+    width: 100%;
+    max-width: 768px;
     padding: .5rem;
     margin: 0 auto;
+    align-items: center;
+    justify-content: space-between;
   }
 
   #logo {

@@ -35,6 +35,11 @@ export const auth: Module<AuthState, any> = {
       const userCredential = await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password);
 
       state.user = (await firestore.collection('users').doc(userCredential.user?.uid).withConverter(appUserConverter).get()).data();
+    },
+
+    async signOut({ state }) {
+      await firebase.auth().signOut();
+      state.user = undefined;
     }
   }
 }

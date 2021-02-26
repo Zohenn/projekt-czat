@@ -1,18 +1,24 @@
 <template>
-  <form class='d-flex flex-column' @submit='login'>
-    <div class='form-row'>
-      <label for='email' class='d-none'>Adres email</label>
-      <input id='email' placeholder='Adres email' v-model='model.email'/>
+  <form class='d-flex flex-column align-items-center w-100' @submit='signIn'>
+    <div class='d-flex flex-column w-100' style='max-width: 250px;'>
+      <div class='form-row'>
+        <label for='email' class='d-none'>Adres email</label>
+        <input id='email' placeholder='Adres email' type='text' v-model.trim='model.email'/>
+      </div>
+      <div class='form-row'>
+        <label for='password' class='d-none'>Hasło</label>
+        <input id='password' placeholder='Hasło' type='password' v-model.trim='model.password'/>
+      </div>
+      <button type='submit' style='font-size: 1.15rem;' :disabled='!isValid'>
+        <span v-if='loading' class='btn-spinner-wrapper'>
+          <span class='spinner-narrow'></span>
+        </span>
+        <span v-else>Zaloguj się</span>
+      </button>
     </div>
-    <div class='form-row'>
-      <label for='password' class='d-none'>Hasło</label>
-      <input id='password' placeholder='Hasło' v-model='model.password'/>
+    <div v-if='loginError' class='form-error'>
+      Nieprawidłowy adres email lub hasło
     </div>
-    <button type='submit' style='font-size: 1.1rem;'>
-      <span v-if='loading' class='spinner-narrow' style='--spinner-color: white; font-size: 1.1rem; --circle-width: .2rem'></span>
-      <span v-else>Zaloguj się</span>
-    </button>
-    <!-- todo: validation -->
   </form>
 </template>
 
@@ -28,26 +34,39 @@
     name: "LoginForm",
     data() {
       return {
-        loading: true,
+        loading: false,
+        loginError: false,
         model: {
           email: '',
           password: '',
         } as LoginFormModel
       };
     },
+    computed: {
+      isValid(): boolean {
+        return this.model.email != '' && this.model.password != '';
+      }
+    },
     methods: {
-      login(e: Event) {
+      async signIn(e: Event) {
         e.preventDefault();
-        this.loading = !this.loading;
-        return;
-        // eslint-disable-next-line no-unreachable
+        this.loginError = false;
         this.loading = true;
-        this.$store.dispatch('auth/signIn', { email: this.model.email, password: this.model.password }).finally(() => this.loading = false);
+        try {
+          await this.$store.dispatch('auth/signIn', { email: this.model.email, password: this.model.password });
+        } catch (e) {
+          this.loginError = true;
+        } finally {
+          this.loading = false;
+        }
       }
     }
   })
 </script>
 
 <style scoped lang='scss'>
-
+  .spinner-narrow {
+    font-size: 1.15rem;
+    --circle-width: .2rem;
+  }
 </style>

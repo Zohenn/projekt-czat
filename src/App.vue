@@ -43,7 +43,8 @@
   }
 
   main {
-    width: 768px;
+    width: 100%;
+    max-width: 768px;
     box-shadow: 0 0 4px 1px var(--primary-color);
     flex-grow: 1;
   }

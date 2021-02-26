@@ -1,3 +1,5 @@
+$primary: #009999;
+
 * {
   box-sizing: border-box;
 }
@@ -5,12 +7,19 @@
 html {
   height: 100%;
   font-size: 14px;
-  --primary-color: #009999;
+  --primary-color: #{$primary};
+  --primary-color-fade: #{transparentize($primary, 0.4)};
+  --primary-color-fade-strong: #{transparentize($primary, 0.8)};
+  --error-color: #b00020;
 }
 
 body {
   margin: 0;
   min-height: 100%;
+}
+
+.w-100 {
+  width: 100%;
 }
 
 .d-flex {
@@ -25,11 +34,20 @@ body {
   flex-direction: column;
 }
 
+.align-items-center {
+  align-items: center;
+}
+
 .form-row {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   margin-bottom: 1rem;
+}
+
+.form-error {
+  margin-top: .75rem;
+  color: var(--error-color);
 }
 
 input {
@@ -38,20 +56,47 @@ input {
   background-color: #ebebeb;
   border: 1px solid #d0d0d0;
   border-radius: 4px;
-}
-
-button {
-  display: grid;
-  place-content: center;
-  font-size: inherit;
-  padding: .5rem 0;
-  color: white;
-  background-color: var(--primary-color);
-  border: 0;
-  border-radius: 4px;
 
   &:focus {
     outline: 0;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 3px 0 var(--primary-color);
+  }
+}
+
+button {
+  font-size: inherit;
+  padding: .5rem;
+  color: white;
+  line-height: 1.5;
+  background-color: var(--primary-color);
+  border: 0;
+  border-radius: 4px;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background-color .2s, box-shadow .2s;
+
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 3px 0 var(--primary-color);
+  }
+
+  &[disabled] {
+    background-color: var(--primary-color-fade);
+    cursor: not-allowed;
+  }
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-content: center;
+  border-radius: 50%;
+  color: var(--primary-color);
+  background-color: transparent;
+  line-height: initial;
+
+  &:focus {
+    background-color: var(--primary-color-fade-strong);
   }
 }
 
@@ -70,8 +115,8 @@ button {
   font-size: 2rem;
 
   display: inline-block;
-  width: calc(1em + var(--circle-width));
-  height: calc(1em + var(--circle-width));
+  width: 1em;
+  height: 1em;
   border-radius: 50%;
   border: var(--circle-width) solid transparent;
   border-top: var(--circle-width) solid var(--spinner-color, var(--primary-color));
@@ -81,4 +126,11 @@ button {
     @extend .spinner;
     --circle-width: .1em;
   }
+}
+
+.btn-spinner-wrapper {
+  display: inline-grid;
+  height: 100%;
+  place-content: center;
+  --spinner-color: white;
 }
