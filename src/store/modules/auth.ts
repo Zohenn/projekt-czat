@@ -1,7 +1,8 @@
 import { Module } from 'vuex';
 import firebase from "firebase";
-import AppUser, { appUserConverter } from "@/entities/appUser";
+import AppUser from "@/entities/appUser";
 import { firestore } from "@/firebase";
+import { getConverter } from "@/entities/firestoreDocument";
 
 export interface AuthState {
   authStateChecked: boolean;
@@ -22,18 +23,19 @@ export const auth: Module<AuthState, any> = {
   actions: {
     async checkAuthState({ state }) {
       await new Promise((resolve) => {
-        firebase.auth().onAuthStateChanged(async (user) => {
+        const authListener = firebase.auth().onAuthStateChanged(async (user) => {
           if(user !== null){
-            console.log('siema');
-            state.user = (await firestore.collection('users').doc(user.uid).withConverter(appUserConverter).get()).data();
+            state.user = (await firestore.collection('users').doc(user.uid).withConverter(getConverter(AppUser)).get()).data();
           }
           resolve();
+          authListener();
         })
       });
     },
 
-    async signIn(_, payload) {
-      await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password);
+    async signIn({ state }, payload) {
+      const userCredential = await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password);
+      state.user = (await firestore.collection('users').doc(userCredential.user?.uid).withConverter(getConverter(AppUser)).get()).data();
     },
 
     async signOut({ state }) {
@@ -46,11 +48,11 @@ export const auth: Module<AuthState, any> = {
 
       const user = new AppUser(payload.name, payload.surname, payload.email);
       await firestore.collection('users').doc(userCredential.user?.uid).set({
-        ...appUserConverter.toFirestore(user),
+        ...getConverter(AppUser).toFirestore(user),
         searchNS: `${user.name} ${user.surname}`.toLowerCase(),
         searchSN: `${user.surname} ${user.name}`.toLowerCase(),
       });
-      state.user = user;
+      state.user = (await firestore.collection('users').doc(userCredential.user?.uid).withConverter(getConverter(AppUser)).get()).data();
     }
   }
 }
