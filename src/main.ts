@@ -4,10 +4,6 @@ import './firebase';
 import App from './App.vue'
 import router from './router'
 import store from './store'
-// import { library } from '@fortawesome/fontawesome-svg-core';
-// import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import vueDebounce, { PluginConfig } from 'vue-debounce';
 
-const app = createApp(App).use(store).use(router);
-// app.component('fa', FontAwesomeIcon);
-app.mount('#app')
+createApp(App).use(store).use(router).use(vueDebounce).mount('#app')

@@ -1,5 +1,4 @@
 import firebase from "firebase";
-import FirestoreDataConverter = firebase.firestore.FirestoreDataConverter;
 import FirestoreDocument, {
   FirestoreDocumentInterface,
   StaticImplements
@@ -30,20 +29,5 @@ export default class AppUser extends FirestoreDocument {
 
   get displayName() {
     return `${this.name} ${this.surname}`;
-  }
-}
-
-export const appUserConverter: FirestoreDataConverter<AppUser> = {
-  fromFirestore(snapshot) {
-    const data = snapshot.data();
-    return new AppUser(data.name, data.surname, data.email);
-  },
-
-  toFirestore(user: AppUser) {
-    return {
-      name: user.name,
-      surname: user.surname,
-      email: user.email,
-    }
   }
 }
