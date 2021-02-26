@@ -1,7 +1,7 @@
 <template>
   <Navbar/>
   <main>
-    <PromiseHandler :promise='authPromise'>
+    <PromiseHandler :promise='authPromise' class='d-flex w-100 h-100 justify-content-center align-items-center'>
       <router-view/>
     </PromiseHandler>
   </main>
@@ -20,10 +20,14 @@
     },
     data() {
       return {
-        // authPromise: this.$store.dispatch('auth/checkAuthState'),
-        authPromise: new Promise((resolve) => {
-          setTimeout(() => resolve(), 0);
-        })
+        authPromise: this.$store.dispatch('auth/checkAuthState').then(() => {
+          if(this.$store.getters['auth/isSignedIn']){
+            this.$router.replace('/');
+          }
+        }),
+        // authPromise: new Promise((resolve) => {
+        //   setTimeout(() => resolve(), 5000000);
+        // })
       }
     },
   })

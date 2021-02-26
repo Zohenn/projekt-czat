@@ -1,7 +1,7 @@
 <template>
   <div id='navbar'>
     <div id='navbar-content'>
-      <img src='../assets/logo2.png' alt='Logo' id='logo'/>
+      <router-link to='/' style='display: inline-flex;'><img src='../assets/logo2.png' alt='Logo' id='logo'/></router-link>
       <button v-if='isSignedIn' class='icon-btn' @click='signOut'>
         <span class='material-icons'>logout</span>
       </button>

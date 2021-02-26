@@ -1,22 +1,21 @@
 <template>
   <div id='sign-up-container'>
-    <form class='d-flex flex-column align-items-center w-100' ref='form' @submit='signUp'>
+    <form class='d-flex flex-column align-items-center w-100' ref='form' @submit.prevent='signUp'>
       <div class='d-flex flex-column w-100' style='max-width: 250px;'>
         <div v-for='(field, key) in fields' :key='"sign-up-" + key' class='form-row'>
           <label :for='key'>{{ field.label }}</label>
-          <input :id='key' :type='field.type' v-model.trim='model[key]' required @focus='field.hadInteraction = true' :class='{"had-interaction": field.hadInteraction}'/>
-          <span class='error-text'>{{ field.error }}</span>
+          <input :id='key' :type='field.type' v-model.trim='model[key]' required @focusout='field.hadInteraction = true'
+                 :class='{"had-interaction": field.hadInteraction}'/>
+          <span class='error-text'>{{ field.errorText }}</span>
         </div>
         <button type='submit' style='font-size: 1.15rem;' :disabled='!isValid'>
-        <span v-if='loading' class='btn-spinner-wrapper'>
-          <span class='spinner-narrow'></span>
-        </span>
+          <span v-if='loading' class='btn-spinner-wrapper'>
+            <span class='spinner-narrow'></span>
+          </span>
           <span v-else>Zarejestruj się</span>
         </button>
       </div>
-      <div v-if='signUpError' class='form-error'>
-        Nieprawidłowy adres email lub hasło
-      </div>
+      <div v-if='signUpError' class='form-error'>{{ signUpError }}</div>
     </form>
   </div>
 </template>
@@ -35,25 +34,25 @@
             label: 'Imię',
             type: 'text',
             hadInteraction: false,
-            error: 'Pole nie może być puste',
+            errorText: 'Pole nie może być puste',
           },
           surname: {
             label: 'Nazwisko',
             type: 'text',
             hadInteraction: false,
-            error: 'Pole nie może być puste',
+            errorText: 'Pole nie może być puste',
           },
           email: {
             label: 'Adres email',
             type: 'email',
             hadInteraction: false,
-            error: 'Nieprawidłowy adres email',
+            errorText: 'Nieprawidłowy adres email',
           },
           password: {
             label: 'Hasło',
             type: 'password',
             hadInteraction: false,
-            error: 'Pole nie może być puste',
+            errorText: 'Pole nie może być puste',
           }
         },
         model: {
@@ -65,13 +64,27 @@
       }
     },
     computed: {
-      isValid(): boolean{
+      isValid(): boolean {
         return Object.values(this.model).every(e => e != '') && (this.$refs.form as HTMLFormElement)?.checkValidity();
       }
     },
     methods: {
-      signUp() {
-        this.model;
+      async signUp() {
+        this.signUpError = '';
+        this.loading = true;
+
+        try {
+          await this.$store.dispatch('auth/signUp', this.model);
+          await this.$router.push('/');
+        } catch (e) {
+          if (e.code == 'auth/email-already-in-use') {
+            this.signUpError = 'Istnieje konto z podanym adresem email';
+          } else {
+            this.signUpError = 'Błąd rejestracji';
+          }
+        } finally {
+          this.loading = false;
+        }
       }
     }
   })
@@ -85,5 +98,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+
+  .spinner-narrow {
+    font-size: 1.15rem;
+    --circle-width: .2rem;
   }
 </style>

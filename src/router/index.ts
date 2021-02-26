@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import SignUp from "@/views/SignUp.vue";
+import store from '../store';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -11,7 +12,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/sign-up',
     name: 'Sign up',
-    component: SignUp
+    component: SignUp,
   }
   // {
   //   path: '/about',

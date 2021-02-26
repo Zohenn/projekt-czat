@@ -1,5 +1,5 @@
 <template>
-  <form class='d-flex flex-column align-items-center w-100' @submit='signIn'>
+  <form class='d-flex flex-column align-items-center w-100' @submit.prevent='signIn'>
     <div class='d-flex flex-column w-100' style='max-width: 250px;'>
       <div class='form-row'>
         <label for='email' class='d-none'>Adres email</label>
@@ -48,10 +48,10 @@
       }
     },
     methods: {
-      async signIn(e: Event) {
-        e.preventDefault();
+      async signIn() {
         this.signInError = false;
         this.loading = true;
+
         try {
           await this.$store.dispatch('auth/signIn', { email: this.model.email, password: this.model.password });
         } catch (e) {

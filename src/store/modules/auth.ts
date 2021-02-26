@@ -24,6 +24,7 @@ export const auth: Module<AuthState, any> = {
       await new Promise((resolve) => {
         firebase.auth().onAuthStateChanged(async (user) => {
           if(user !== null){
+            console.log('siema');
             state.user = (await firestore.collection('users').doc(user.uid).withConverter(appUserConverter).get()).data();
           }
           resolve();
@@ -31,15 +32,25 @@ export const auth: Module<AuthState, any> = {
       });
     },
 
-    async signIn({ state }, payload) {
-      const userCredential = await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password);
-
-      state.user = (await firestore.collection('users').doc(userCredential.user?.uid).withConverter(appUserConverter).get()).data();
+    async signIn(_, payload) {
+      await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password);
     },
 
     async signOut({ state }) {
       await firebase.auth().signOut();
       state.user = undefined;
+    },
+
+    async signUp({ state }, payload) {
+      const userCredential = await firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password);
+
+      const user = new AppUser(payload.name, payload.surname, payload.email);
+      await firestore.collection('users').doc(userCredential.user?.uid).set({
+        ...appUserConverter.toFirestore(user),
+        searchNS: `${user.name} ${user.surname}`.toLowerCase(),
+        searchSN: `${user.surname} ${user.name}`.toLowerCase(),
+      });
+      state.user = user;
     }
   }
 }
