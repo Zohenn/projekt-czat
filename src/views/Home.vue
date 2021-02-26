@@ -1,7 +1,10 @@
 <template>
   <div id='home'>
     <div v-if='isSignedIn'>{{ $store.state.auth.user.displayName }}</div>
-    <LoginForm v-else/>
+    <div v-else>
+      <LoginForm/>
+      <div id='sign-up-wrapper'>Nie masz konta? <router-link to='/sign-up'>Zarejestruj się</router-link></div>
+    </div>
   </div>
 </template>
 
@@ -29,5 +32,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+
+  #sign-up-wrapper {
+    padding-top: .75rem;
   }
 </style>

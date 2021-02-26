@@ -16,7 +16,7 @@
         <span v-else>Zaloguj się</span>
       </button>
     </div>
-    <div v-if='loginError' class='form-error'>
+    <div v-if='signInError' class='form-error'>
       Nieprawidłowy adres email lub hasło
     </div>
   </form>
@@ -35,7 +35,7 @@
     data() {
       return {
         loading: false,
-        loginError: false,
+        signInError: false,
         model: {
           email: '',
           password: '',
@@ -50,12 +50,12 @@
     methods: {
       async signIn(e: Event) {
         e.preventDefault();
-        this.loginError = false;
+        this.signInError = false;
         this.loading = true;
         try {
           await this.$store.dispatch('auth/signIn', { email: this.model.email, password: this.model.password });
         } catch (e) {
-          this.loginError = true;
+          this.signInError = true;
         } finally {
           this.loading = false;
         }
