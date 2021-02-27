@@ -14,8 +14,8 @@ export interface FirestoreDocumentInterface<T extends FirestoreDocument> {
 }
 
 export default abstract class FirestoreDocument {
-  get docReference(): firebase.firestore.DocumentReference | undefined {
-    return this._docReference;
+  get docReference(): firebase.firestore.DocumentReference {
+    return this._docReference as DocumentReference;
   }
 
   setDocReference(value: firebase.firestore.DocumentReference) {
@@ -24,8 +24,8 @@ export default abstract class FirestoreDocument {
 
   private _docReference: DocumentReference | undefined;
 
-  get id(): string | undefined {
-    return this._docReference?.id;
+  get id(): string {
+    return (this._docReference as DocumentReference).id;
   }
 
   abstract toFirestore(): DocumentData;

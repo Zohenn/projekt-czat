@@ -4,6 +4,6 @@ import './firebase';
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import vueDebounce, { PluginConfig } from 'vue-debounce';
+import vueDebounce from 'vue-debounce';
 
 createApp(App).use(store).use(router).use(vueDebounce).mount('#app')

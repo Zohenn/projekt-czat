@@ -48,6 +48,7 @@
 
 <style scoped lang='scss'>
   .chat-message {
+    max-width: 60%;
     display: flex;
     align-items: flex-end;
     margin-top: .15rem;
@@ -56,6 +57,7 @@
 
     .chat-message-time {
       margin-left: .35rem;
+      padding-top: .25rem;
       color: var(--grey-text);
     }
 

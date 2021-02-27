@@ -16,7 +16,7 @@ export default class Chat extends FirestoreDocument {
 
   static fromFirestore(snapshot: QueryDocumentSnapshot): Chat {
     const data = snapshot.data();
-    const chat = new Chat(data.users, data.lastMessage);
+    const chat = new Chat(data.users, { ...data.lastMessage, date: data.lastMessage.date.toDate() });
     chat.setDocReference(snapshot.ref);
     return chat;
   }
@@ -26,5 +26,9 @@ export default class Chat extends FirestoreDocument {
       users: this.users,
       usersMap: Object.fromEntries(this.users.map(user => [user, true])),
     };
+  }
+
+  getOtherUserTo(uid: string): string {
+    return this.users.find(u => u !== uid) as string;
   }
 }

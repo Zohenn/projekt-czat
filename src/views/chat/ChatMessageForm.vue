@@ -37,13 +37,20 @@
           return;
         }
 
-        await this.chat.docReference?.collection('messages').add({
+        const batch = this.chat.docReference.firestore.batch();
+        const message = {
           author: this.$store.getters['auth/uid'],
           date: FieldValue.serverTimestamp(),
           text: this.text,
+        };
+
+        batch.set(this.chat.docReference.collection('messages').doc(), message);
+        batch.update(this.chat.docReference, {
+          lastMessage: message,
         });
 
         this.text = '';
+        await batch.commit();
       }
     }
   })

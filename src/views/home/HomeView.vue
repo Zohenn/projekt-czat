@@ -1,6 +1,6 @@
 <template>
   <div id='home'>
-    <div v-if='isSignedIn'>{{ $store.state.auth.user.displayName }}</div>
+    <ChatList v-if='isSignedIn'/>
     <div v-else>
       <LoginForm/>
       <div id='sign-up-wrapper'>Nie masz konta? <router-link to='/sign-up'>Zarejestruj się</router-link></div>
@@ -12,12 +12,13 @@
   import { defineComponent } from 'vue';
   import LoginForm from '@/components/LoginForm.vue';
   import { createNamespacedHelpers } from "vuex";
+  import ChatList from "@/views/home/ChatList.vue";
 
   const { mapGetters } = createNamespacedHelpers('auth');
 
   export default defineComponent({
     name: "HomeView",
-    components: { LoginForm },
+    components: { ChatList, LoginForm },
     computed: {
       ...mapGetters(['isSignedIn']),
     }
