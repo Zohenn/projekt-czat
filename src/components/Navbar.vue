@@ -28,6 +28,7 @@
     methods: {
       signOut() {
         this.$store.dispatch('auth/signOut');
+        this.$router.replace('/');
       }
     }
   })

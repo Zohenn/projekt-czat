@@ -16,9 +16,11 @@ html {
   --primary-color-fade-strong: #{transparentize($primary, 0.8)};
   --error-color: #b00020;
   --grey: #d0d0d0;
+  --grey-light: #e0e0e0;
   --grey-darker: #bfbfbf;
   --grey-dark: #999999;
   --grey-bg: #fafafa;
+  --grey-text: #565656;
 }
 
 body {
@@ -153,9 +155,14 @@ button {
   background-color: transparent;
   line-height: initial;
 
+  &:hover {
+    background-color: var(--grey-light);
+  }
+
   &:focus {
     background-color: var(--primary-color-fade-strong);
   }
+
 }
 
 @keyframes spin {

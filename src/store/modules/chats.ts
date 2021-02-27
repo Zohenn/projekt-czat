@@ -32,8 +32,6 @@ export const chats: Module<ChatsState, any> = {
         .limit(1)
         .withConverter(getConverter(Chat)).get();
 
-      console.log(querySnapshot.docs, cuid, uid);
-
       if (querySnapshot.docs.length) {
         state.chats[querySnapshot.docs[0].id] = querySnapshot.docs[0].data();
       } else {

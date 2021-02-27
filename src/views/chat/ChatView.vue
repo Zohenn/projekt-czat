@@ -3,8 +3,8 @@
     <div id='chat-container'>
       <div id='chat-header'>
         <div id='user-info'>
-          <img src='../assets/avatar.png'/>
-          {{ otherUser.displayName }}
+          <img src='../../assets/avatar.png'/>
+          <span>{{ otherUser.displayName }}</span>
         </div>
         <div id='chat-tabs'>
           <button class='tab active'>
@@ -21,18 +21,8 @@
           <span class='material-icons'>close</span>
         </button>
       </div>
-      <div style='flex-grow: 1;'>
-      </div>
-      <form @submit.prevent>
-        <div id='chat-input-container'>
-          <div style='flex-grow: 1; margin-right: 1rem;'>
-            <label for='chat-message'>
-              <input id='chat-message' type='text' placeholder='Aa'>
-            </label>
-          </div>
-          <button type='submit' class='icon-btn'><span class='material-icons'>send</span></button>
-        </div>
-      </form>
+      <ChatMessageList :chat='chat' style='flex-grow: 1;'/>
+      <ChatMessageForm :chat='chat'/>
     </div>
   </PromiseHandler>
 </template>
@@ -42,10 +32,12 @@
   import PromiseHandler from "@/components/PromiseHandler.vue";
   import Chat from "@/entities/chat";
   import AppUser from "@/entities/appUser";
+  import ChatMessageForm from "@/views/chat/ChatMessageForm.vue";
+  import ChatMessageList from "@/views/chat/ChatMessageList.vue";
 
   export default defineComponent({
     name: "ChatView",
-    components: { PromiseHandler },
+    components: { ChatMessageList, ChatMessageForm, PromiseHandler },
     props: {
       uid: String,
     },
@@ -88,6 +80,7 @@
       align-items: center;
       font-size: 1.2rem;
       font-weight: 500;
+      color: var(--grey-text);
 
       img {
         height: 30px;
@@ -127,15 +120,5 @@
     }
   }
 
-  #chat-input-container {
-    display: flex;
-    align-items: center;
-    padding: .5rem 1rem;
-    border-top: 1px solid var(--grey);
-  }
 
-  #chat-message {
-    width: 100%;
-    padding: .5rem .75rem;
-  }
 </style>

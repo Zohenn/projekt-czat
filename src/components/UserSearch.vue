@@ -10,7 +10,7 @@
         <li style='text-align: center;'><span class='spinner-narrow'></span></li>
       </template>
       <template v-else>
-        <li v-for='result in results' :key='result.id' @click='openChat(result)'>
+        <li v-for='result in results' :key='result.id' @click.stop='openChat(result)'>
           {{ result.displayName }}
         </li>
         <li v-if='results.length === 0' style='text-align: center;'>Brak wyników</li>
