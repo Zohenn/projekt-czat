@@ -36,7 +36,7 @@
 <style lang='scss'>
   #navbar {
     width: 100%;
-    background-color: white;
+    background-color: var(--grey-bg);
     border-bottom: 1px solid var(--primary-color);
     z-index: 1;
   }

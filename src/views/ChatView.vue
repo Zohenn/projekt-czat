@@ -2,7 +2,10 @@
   <PromiseHandler :promise='loadPromise' class='centered-flex'>
     <div id='chat-container'>
       <div id='chat-header'>
-        <div id='user-display-name'>{{ otherUser.displayName }}</div>
+        <div id='user-info'>
+          <img src='../assets/avatar.png'/>
+          {{ otherUser.displayName }}
+        </div>
         <div id='chat-tabs'>
           <button class='tab active'>
             <span class='material-icons'>chat_bubble</span>
@@ -80,9 +83,17 @@
     align-items: center;
     border-bottom: 1px solid var(--grey);
 
-    #user-display-name {
+    #user-info {
+      display: flex;
+      align-items: center;
       font-size: 1.2rem;
       font-weight: 500;
+
+      img {
+        height: 30px;
+        margin-right: 1rem;
+        border-radius: 50%;
+      }
     }
   }
 
@@ -97,7 +108,7 @@
       padding: 0 .75rem;
       background-color: transparent;
       border-radius: 0;
-      color: var(--grey);
+      color: var(--grey-darker);
       border-bottom: 2px solid transparent;
       box-shadow: none;
       cursor: pointer;
