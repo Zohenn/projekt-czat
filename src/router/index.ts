@@ -1,18 +1,24 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '../views/Home.vue'
-import SignUp from "@/views/SignUp.vue";
-import store from '../store';
+import HomeView from '../views/HomeView.vue'
+import SignUpView from "@/views/SignUpView.vue";
+import ChatView from "@/views/ChatView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: HomeView
   },
   {
     path: '/sign-up',
     name: 'Sign up',
-    component: SignUp,
+    component: SignUpView,
+  },
+  {
+    path: '/chat/:uid',
+    name: 'Chat',
+    component: ChatView,
+    props: true,
   }
   // {
   //   path: '/about',

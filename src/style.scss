@@ -15,6 +15,8 @@ html {
   --primary-color-fade: #{transparentize($primary, 0.4)};
   --primary-color-fade-strong: #{transparentize($primary, 0.8)};
   --error-color: #b00020;
+  --grey: #d0d0d0;
+  --grey-dark: #999999;
 }
 
 body {
@@ -47,6 +49,14 @@ body {
 }
 
 .align-items-center {
+  align-items: center;
+}
+
+.centered-flex {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
   align-items: center;
 }
 
@@ -98,7 +108,7 @@ input {
   padding: .5rem .35rem;
   font-size: inherit;
   background-color: #ebebeb;
-  border: 1px solid #d0d0d0;
+  border: 1px solid var(--grey);
   border-radius: 4px;
 
   &:focus {

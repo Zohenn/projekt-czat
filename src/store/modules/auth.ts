@@ -15,11 +15,17 @@ export const auth: Module<AuthState, any> = {
     authStateChecked: false,
     user: undefined,
   },
+
   getters: {
     isSignedIn({ user }): boolean {
       return user !== undefined;
+    },
+
+    uid({ user }): string | undefined {
+      return user?.id;
     }
   },
+
   actions: {
     async checkAuthState({ state }) {
       await new Promise((resolve) => {

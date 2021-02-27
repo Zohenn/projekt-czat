@@ -10,7 +10,7 @@
         <li style='text-align: center;'><span class='spinner-narrow'></span></li>
       </template>
       <template v-else>
-        <li v-for='result in results' :key='result.id'>
+        <li v-for='result in results' :key='result.id' @click='openChat(result)'>
           {{ result.displayName }}
         </li>
         <li v-if='results.length === 0' style='text-align: center;'>Brak wyników</li>
@@ -53,14 +53,19 @@
     },
 
     methods: {
-      closeSearch(){
+      closeSearch() {
         this.showResults = false;
+      },
+
+      openChat(user: AppUser) {
+        this.showResults = false;
+        this.$router.push(`/chat/${user.id}`);
       },
 
       async search(val: string) {
         val = val.toLowerCase();
         this.searchText = val;
-        if(!val){
+        if (!val) {
           return;
         }
 
@@ -77,7 +82,7 @@
               .get()
         ]);
 
-        const users: {[key: string]: QueryDocumentSnapshot<AppUser>} = {};
+        const users: { [key: string]: QueryDocumentSnapshot<AppUser> } = {};
 
         querySnapshots.forEach(snapshot => snapshot.docs.forEach((e) => users[e.id] = e))
 
@@ -123,7 +128,7 @@
     position: relative;
     margin: 0 auto;
 
-    &.results-visible input{
+    &.results-visible input {
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
@@ -137,7 +142,7 @@
       padding-right: 36px;
       border-radius: 10px;
 
-      &:focus + .search-icon{
+      &:focus + .search-icon {
         color: var(--primary-color);
       }
     }

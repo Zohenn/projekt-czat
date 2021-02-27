@@ -24,7 +24,7 @@
   import { defineComponent } from 'vue';
 
   export default defineComponent({
-    name: "SignUp",
+    name: "SignUpView",
     data() {
       return {
         loading: false,

@@ -21,7 +21,7 @@
     data() {
       return {
         authPromise: this.$store.dispatch('auth/checkAuthState').then(() => {
-          if(this.$store.getters['auth/isSignedIn']){
+          if(!this.$store.getters['auth/isSignedIn']){
             this.$router.replace('/');
           }
         }),

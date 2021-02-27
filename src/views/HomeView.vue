@@ -16,7 +16,7 @@
   const { mapGetters } = createNamespacedHelpers('auth');
 
   export default defineComponent({
-    name: "Home",
+    name: "HomeView",
     components: { LoginForm },
     computed: {
       ...mapGetters(['isSignedIn']),
