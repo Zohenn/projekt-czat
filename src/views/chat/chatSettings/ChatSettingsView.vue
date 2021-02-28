@@ -32,13 +32,21 @@
     },
 
     methods: {
-      async setNickname(uid: string, newNickname: string) {
+      async setNickname(uid: string, newNickname: string | null) {
         const nickname = this.chat.nicknames?.[uid] ?? '';
         if (nickname !== newNickname) {
           const getUserByUid = this.$store.getters['users/getUserByUid'];
-          const text = this.uid === uid ?
-              `${getUserByUid(this.uid).displayName} zmienił swój pseudonim na ${newNickname}` :
-              `${getUserByUid(this.uid).displayName} zmienił pseudonim ${getUserByUid(uid).displayName} na ${newNickname}`;
+          let text: string;
+          if (newNickname === '') {
+            newNickname = null;
+            text = this.uid === uid ? `${getUserByUid(this.uid).displayName} usunął swój pseudonim` :
+                `${getUserByUid(this.uid).displayName} usunął pseudonim ${getUserByUid(uid).displayName}`;
+          } else {
+            text = this.uid === uid ?
+                `${getUserByUid(this.uid).displayName} zmienił swój pseudonim na ${newNickname}` :
+                `${getUserByUid(this.uid).displayName} zmienił pseudonim ${getUserByUid(uid).displayName} na ${newNickname}`;
+          }
+
           const batch = this.chat.docReference.firestore.batch();
           batch.set(this.chat.docReference, {
             nicknames: {

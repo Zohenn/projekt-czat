@@ -4,7 +4,7 @@
     <form class='user-nickname-form' autocomplete='off' @submit.prevent='$emit("setNickname", newNickname); active = false'>
       <label :for='user.id + "-nickname"'/>
       <input :id='user.id + "-nickname"' class='user-nickname' type='text' :disabled='!active'
-             v-model='newNickname'/>
+             v-model.trim='newNickname'/>
       <button type='submit' class='icon-btn' v-show='active'>
         <span class='material-icons' style='font-size: 18px;'>done</span>
       </button>

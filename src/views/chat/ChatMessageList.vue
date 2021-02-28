@@ -104,10 +104,11 @@
       },
 
       updateReadStatus() {
-        if (this.messages[0].author !== this.uid && this.messages[0].id !== this.lastRead[this.uid]) {
+        const newestMessage = this.messages.find(message => !message.isSystem);
+        if (newestMessage && newestMessage.author !== this.uid && newestMessage.id !== this.lastRead[this.uid]) {
           this.chat.docReference.collection('lastRead').doc('_').set({
             lastRead: {
-              [this.uid]: this.messages[0].id,
+              [this.uid]: newestMessage.id,
             }
           }, { merge: true });
         }
@@ -189,7 +190,7 @@
 
     .chat-system-message {
       text-align: center;
-      color: var(--grey-text);
+      color: var(--grey-text-light);
       padding: 1rem 0.5rem;
     }
   }
