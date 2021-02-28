@@ -132,7 +132,7 @@ a {
   }
 }
 
-input, textarea {
+input, textarea, *[contenteditable="true"] {
   padding: .5rem .35rem;
   font-size: inherit;
   background-color: #ebebeb;

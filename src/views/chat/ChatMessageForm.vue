@@ -1,14 +1,13 @@
 <template>
-  <form @submit.prevent='sendMessage' autocomplete='off'>
-    <div id='chat-input-container'>
-      <div style='flex-grow: 1; margin-right: 1rem;'>
-        <label for='chat-message-input'>
-          <input id='chat-message-input' type='text' placeholder='Aa' v-model.trim='text'>
-        </label>
+  <div id='chat-input-container'>
+    <div style='flex-grow: 1; margin-right: 1rem;'>
+      <div id='chat-message-input-wrapper'>
+        <div id='chat-message-input' contenteditable='true' @input='text = $event.target.innerText.trim()' ref='input' @keypress.enter='onKeyUp'></div>
+        <div v-show='text === ""' class='placeholder'>Aa</div>
       </div>
-      <button type='submit' class='icon-btn'><span class='material-icons'>send</span></button>
     </div>
-  </form>
+    <button class='icon-btn' @click='sendMessage'><span class='material-icons'>send</span></button>
+  </div>
 </template>
 
 <script lang='ts'>
@@ -32,8 +31,15 @@
     },
 
     methods: {
-      async sendMessage(){
-        if(this.text == ''){
+      onKeyUp(e: KeyboardEvent) {
+        if (!e.shiftKey) {
+          e.preventDefault();
+          this.sendMessage();
+        }
+      },
+
+      async sendMessage() {
+        if (this.text == '') {
           return;
         }
 
@@ -50,6 +56,7 @@
         });
 
         this.text = '';
+        (this.$refs.input as HTMLElement).innerHTML = '';
         await batch.commit();
       }
     }
@@ -64,8 +71,27 @@
     border-top: 1px solid var(--grey);
   }
 
+  #chat-message-input-wrapper {
+    position: relative;
+
+    .placeholder {
+      position: absolute;
+      top: .5rem;
+      left: .75rem;
+      color: var(--grey-text);
+    }
+  }
+
   #chat-message-input {
     width: 100%;
     padding: .5rem .75rem;
+    line-height: 1.25em;
+    min-height: 2.25em;
+    max-height: 6em;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      width: 0;
+    }
   }
 </style>
