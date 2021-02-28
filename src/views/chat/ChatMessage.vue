@@ -2,7 +2,7 @@
   <div class='chat-message' :class='{ "is-author": isAuthor, "has-read-icon": showReadIcon }'>
     <div>
       <div v-if='shouldShowTime' class='chat-message-time'>{{ formattedTime }}</div>
-      <div class='chat-message-text'>
+      <div class='chat-message-text' @click='showTime = !showTime'>
         {{ message.text }}
       </div>
     </div>

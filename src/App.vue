@@ -47,5 +47,6 @@
     max-width: 768px;
     box-shadow: 0 0 4px 1px var(--primary-color);
     flex-grow: 1;
+    min-height: 0;
   }
 </style>

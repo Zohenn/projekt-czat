@@ -2,6 +2,25 @@ $primary: #009999;
 
 * {
   box-sizing: border-box;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  &:hover{
+    background-color: var(--grey-light);
+  }
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 4px;
 }
 
 html {
@@ -137,7 +156,6 @@ button {
   transition: background-color .2s, box-shadow .2s;
 
   &:focus {
-    outline: 0;
     box-shadow: 0 0 3px 0 var(--primary-color);
   }
 
