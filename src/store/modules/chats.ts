@@ -29,7 +29,7 @@ export const chats: Module<ChatsState, any> = {
     async fetchChat({ state, rootGetters }, uid: string) {
       const cuid = rootGetters['auth/uid'];
       for (const chat of Object.values(state.chats)) {
-        if (chat.users.some(id => id === cuid || id === uid)) {
+        if (chat.users.includes(uid) && chat.users.includes(cuid)) {
           return;
         }
       }
@@ -95,6 +95,13 @@ export const chats: Module<ChatsState, any> = {
 
           state.lastChats.unshift(...newChats);
         });
+    },
+
+    async refresh({ state }, id: string) {
+      const snapshot = await firestore.collection('chats').doc(id).withConverter(getConverter(Chat)).get();
+      if(snapshot.exists){
+        state.chats[id] = snapshot.data() as Chat;
+      }
     },
 
     reset({ state }) {

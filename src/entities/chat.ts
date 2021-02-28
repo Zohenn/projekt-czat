@@ -10,13 +10,16 @@ interface LastMessage {
 
 @StaticImplements<FirestoreDocumentInterface<Chat>>()
 export default class Chat extends FirestoreDocument {
-  constructor(public users: string[], public lastMessage?: LastMessage){
+  constructor(public users: string[], public lastMessage?: LastMessage, public nicknames?: { [key: string]: string }) {
     super();
   }
 
   static fromFirestore(snapshot: QueryDocumentSnapshot): Chat {
     const data = snapshot.data();
-    const chat = new Chat(data.users, { ...data.lastMessage, date: data.lastMessage.date.toDate() });
+    const chat = new Chat(data.users, {
+      ...data.lastMessage,
+      date: data.lastMessage?.date?.toDate()
+    }, { ...data.nicknames });
     chat.setDocReference(snapshot.ref);
     return chat;
   }

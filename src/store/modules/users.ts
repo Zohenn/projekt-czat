@@ -23,15 +23,15 @@ export const users: Module<UsersState, any> = {
 
   actions: {
     async fetchUser({ state }, uid: string) {
-      if(state.users[uid]){
-        return;
+      if(!state.users[uid]){
+        const userSnapshot = await firestore.collection('users').doc(uid).withConverter(getConverter(AppUser)).get();
+        if(!userSnapshot.exists){
+          throw 'Użytkownik o podanym uid nie istnieje';
+        }
+        state.users[uid] = userSnapshot.data() as AppUser;
       }
 
-      const userSnapshot = await firestore.collection('users').doc(uid).withConverter(getConverter(AppUser)).get();
-      if(!userSnapshot.exists){
-        throw 'Użytkownik o podanym uid nie istnieje';
-      }
-      state.users[userSnapshot.id] = userSnapshot.data() as AppUser;
+      return state.users[uid];
     },
 
     reset({ state }) {

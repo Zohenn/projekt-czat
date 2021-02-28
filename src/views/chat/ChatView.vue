@@ -3,26 +3,29 @@
     <div id='chat-container'>
       <div id='chat-header'>
         <div id='user-info'>
-          <img src='../../assets/avatar.png'/>
-          <span>{{ otherUser.displayName }}</span>
+          <img src='../../assets/avatar.png' alt='Avatar'/>
+          <span>{{ chat.nicknames[uid] ?? otherUser.displayName }}</span>
         </div>
         <div id='chat-tabs'>
-          <button class='tab active'>
+          <router-link :to='{ name: "chat-messages" }' tag='button' class='tab'>
             <span class='material-icons'>chat_bubble</span>
-          </button>
-          <button class='tab'>
+          </router-link>
+          <router-link :to='{ name: "chat-images" }' tag='button' class='tab'>
             <span class='material-icons'>image</span>
-          </button>
-          <button class='tab'>
+          </router-link>
+          <router-link :to='{ name: "chat-settings" }' tag='button' class='tab'>
             <span class='material-icons'>settings</span>
-          </button>
+          </router-link>
         </div>
         <button class='icon-btn' style='margin: .25rem 0 .25rem auto;' @click='$router.push("/")'>
           <span class='material-icons'>close</span>
         </button>
       </div>
-      <ChatMessageList :chat='chat' style='flex-grow: 1;'/>
-      <ChatMessageForm :chat='chat'/>
+      <router-view v-slot='{ Component }'>
+        <keep-alive>
+          <component :is='Component' :chat='chat'/>
+        </keep-alive>
+      </router-view>
     </div>
   </PromiseHandler>
 </template>
@@ -32,12 +35,10 @@
   import PromiseHandler from "@/components/PromiseHandler.vue";
   import Chat from "@/entities/chat";
   import AppUser from "@/entities/appUser";
-  import ChatMessageForm from "@/views/chat/ChatMessageForm.vue";
-  import ChatMessageList from "@/views/chat/ChatMessageList.vue";
 
   export default defineComponent({
     name: "ChatView",
-    components: { ChatMessageList, ChatMessageForm, PromiseHandler },
+    components: { PromiseHandler },
     props: {
       uid: String,
     },
@@ -105,6 +106,7 @@
       border-bottom: 2px solid transparent;
       box-shadow: none;
       cursor: pointer;
+      text-decoration: none;
       transition: background-color .2s, border-bottom-color .2s, color .2s;
 
       &:hover, &:focus {
@@ -113,7 +115,7 @@
         outline: 0;
       }
 
-      &.active {
+      &.router-link-exact-active {
         color: var(--primary-color);
         border-bottom-color: var(--primary-color);
       }

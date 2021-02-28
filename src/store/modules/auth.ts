@@ -31,12 +31,11 @@ export const auth: Module<AuthState, any> = {
   },
 
   actions: {
-    async checkAuthState({ state }) {
+    async checkAuthState({ state, dispatch }) {
       await new Promise((resolve) => {
         const authListener = firebase.auth().onAuthStateChanged(async (user) => {
           if (user !== null) {
-            state.user =
-              (await firestore.collection('users').doc(user.uid).withConverter(getConverter(AppUser)).get()).data();
+            state.user = await dispatch('users/fetchUser', user.uid, { root: true });
           }
           resolve();
           authListener();
@@ -44,11 +43,9 @@ export const auth: Module<AuthState, any> = {
       });
     },
 
-    async signIn({ state }, payload) {
+    async signIn({ state, dispatch }, payload) {
       const userCredential = await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password);
-      state.user =
-        (await firestore.collection('users').doc(userCredential.user?.uid).withConverter(getConverter(AppUser))
-          .get()).data();
+      state.user = await dispatch('users/fetchUser', userCredential.user?.uid, { root: true });
     },
 
     async signOut({ state, dispatch }) {
@@ -57,7 +54,7 @@ export const auth: Module<AuthState, any> = {
       Object.assign(state, initialState());
     },
 
-    async signUp({ state }, payload) {
+    async signUp({ state, dispatch }, payload) {
       const userCredential = await firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password);
 
       const user = new AppUser(payload.name, payload.surname, payload.email);
@@ -66,9 +63,7 @@ export const auth: Module<AuthState, any> = {
         searchNS: `${user.name} ${user.surname}`.toLowerCase(),
         searchSN: `${user.surname} ${user.name}`.toLowerCase(),
       });
-      state.user =
-        (await firestore.collection('users').doc(userCredential.user?.uid).withConverter(getConverter(AppUser))
-          .get()).data();
+      state.user = await dispatch('users/fetchUser', userCredential.user?.uid, { root: true });
     }
   }
 }

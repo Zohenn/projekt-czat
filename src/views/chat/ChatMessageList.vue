@@ -2,10 +2,15 @@
   <PromiseHandler :promise='initPromise' class='centered-flex'>
     <div id='chat-messages-container' v-bind='$attrs' ref='container' @scroll='onScroll'>
       <template v-for='(message, i) in messages' :key='message.id'>
-        <ChatMessage :message='message' :forceShowTime='forceShowTime(i)' :showReadIcon='showReadIcon(message)'/>
-        <div v-if='showDate(i)' class='chat-message-date' :class='{ "is-first": i === messages.length - 1 }'>
-          {{ formatDate(message) }}
-        </div>
+        <template v-if='message.isSystem'>
+          <div class='chat-system-message'>{{ message.text }}</div>
+        </template>
+        <template v-else>
+          <ChatMessage :message='message' :forceShowTime='forceShowTime(i)' :showReadIcon='showReadIcon(message)'/>
+          <div v-if='showDate(i)' class='chat-message-date' :class='{ "is-first": i === messages.length - 1 }'>
+            {{ formatDate(message) }}
+          </div>
+        </template>
       </template>
       <PromiseHandler v-if='fetchMorePromise' :promise='fetchMorePromise' class='centered-flex'
                       style='padding-top: .5rem;'/>
@@ -75,7 +80,7 @@
               })
         });
 
-        if(this.messages.length) {
+        if (this.messages.length) {
           this.updateReadStatus();
         }
 
@@ -88,6 +93,10 @@
                 const newMessages: Message[] = [];
                 querySnapshot.docChanges().forEach(docChange => newMessages.push(docChange.doc.data()));
                 this.messages.unshift(...newMessages);
+
+                if(newMessages.some(message => message.isSystem)){
+                  this.$store.dispatch('chats/refresh', this.chat.id);
+                }
 
                 this.updateReadStatus();
               }
@@ -176,6 +185,12 @@
       &.is-first {
         padding-top: .5rem;
       }
+    }
+
+    .chat-system-message {
+      text-align: center;
+      color: var(--grey-text);
+      padding: 1rem 0.5rem;
     }
   }
 </style>

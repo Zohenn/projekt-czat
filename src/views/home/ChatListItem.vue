@@ -2,7 +2,7 @@
   <div class='last-chat' @click='openChat' tabindex='0'>
     <img class='last-chat-avatar' src='../../assets/avatar.png' alt='Avatar'/>
     <div class='last-chat-info'>
-      <div class='last-chat-user'>{{ otherUser.displayName }}</div>
+      <div class='last-chat-user'>{{ chat.nicknames[otherUser.id] ?? otherUser.displayName }}</div>
       <div class='last-chat-message'>
         <div class='last-chat-message-text'>
           {{ `${chat.lastMessage.author === uid ? 'Ty: ' : ''}${chat.lastMessage.text}` }}
@@ -85,6 +85,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-width: 0;
 
     .last-chat-user {
       font-size: 1.2rem;
@@ -97,6 +98,9 @@
 
       .last-chat-message-text {
         margin-right: .5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .last-chat-message-time {

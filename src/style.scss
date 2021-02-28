@@ -10,6 +10,7 @@ $primary: #009999;
 
 *::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 *::-webkit-scrollbar-track {
@@ -34,6 +35,8 @@ html {
   --primary-color-fade: #{transparentize($primary, 0.4)};
   --primary-color-fade-strong: #{transparentize($primary, 0.8)};
   --error-color: #b00020;
+  --error-color-fade: #{transparentize(#b00020, 0.4)};
+  --error-color-fade-strong: #{transparentize(#b00020, 0.8)};
   --grey: #d0d0d0;
   --grey-light: #e0e0e0;
   --grey-darker: #bfbfbf;
@@ -128,12 +131,14 @@ a {
   }
 }
 
-input {
+input, textarea {
   padding: .5rem .35rem;
   font-size: inherit;
   background-color: #ebebeb;
   border: 1px solid var(--grey);
   border-radius: 4px;
+  min-width: 0;
+  font-family: inherit;
 
   &:focus {
     outline: 0;

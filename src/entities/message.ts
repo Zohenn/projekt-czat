@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 import QueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot;
 
 @StaticImplements<FirestoreDocumentInterface<Message>>()
-export default class Message extends FirestoreDocument{
+export default class Message extends FirestoreDocument {
   constructor(public author: string, public date: Date, public text: string) {
     super();
   }
@@ -21,5 +21,9 @@ export default class Message extends FirestoreDocument{
       date: this.date,
       text: this.text,
     };
+  }
+
+  get isSystem(): boolean {
+    return this.author === 'system';
   }
 }
