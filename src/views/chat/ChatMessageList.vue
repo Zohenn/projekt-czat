@@ -1,8 +1,12 @@
 <template>
   <PromiseHandler :promise='initPromise' class='centered-flex'>
     <div id='chat-messages-container' v-bind='$attrs' ref='container' @scroll='onScroll'>
-      <ChatMessage v-for='(message, i) in messages' :key='message.id' :message='message'
-                   :forceShowTime='forceShowTime(i)' :showReadIcon='showReadIcon(message)'/>
+      <template v-for='(message, i) in messages' :key='message.id'>
+        <ChatMessage :message='message' :forceShowTime='forceShowTime(i)' :showReadIcon='showReadIcon(message)'/>
+        <div v-if='showDate(i)' class='chat-message-date' :class='{ "is-first": i === messages.length - 1 }'>
+          {{ formatDate(message) }}
+        </div>
+      </template>
       <PromiseHandler v-if='fetchMorePromise' :promise='fetchMorePromise' class='centered-flex'
                       style='padding-top: .5rem;'/>
     </div>
@@ -103,6 +107,24 @@
             Math.floor((this.messages[i].date.getTime() - this.messages[i + 1].date.getTime()) / (60 * 1000)) > 5;
       },
 
+      showDate(i: number) {
+        const firstDate = this.messages[i].date, secondDate = this.messages[i + 1]?.date;
+        return i === this.messages.length - 1 ||
+            !(firstDate.getDay() === secondDate.getDay() &&
+                firstDate.getMonth() === secondDate.getMonth() &&
+                firstDate.getFullYear() === secondDate.getFullYear()
+            );
+      },
+
+      formatDate(message: Message): string {
+        const now = new Date();
+        return message.date.toLocaleDateString('pl-PL', {
+          day: '2-digit',
+          month: 'short',
+          year: now.getFullYear() !== message.date.getFullYear() ? 'numeric' : undefined
+        })
+      },
+
       showReadIcon(message: Message): boolean {
         return message.author === this.uid && this.lastRead[this.chat.getOtherUserTo(this.uid)] === message.id;
       },
@@ -142,5 +164,15 @@
     flex-direction: column-reverse;
     padding: .5rem 0;
     overflow: auto;
+
+    .chat-message-date {
+      padding: 2rem 0 .5rem;
+      text-align: center;
+      color: var(--grey-text);
+
+      &.is-first {
+        padding-top: .5rem;
+      }
+    }
   }
 </style>

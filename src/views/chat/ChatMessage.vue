@@ -1,6 +1,6 @@
 <template>
   <div class='chat-message' :class='{ "is-author": isAuthor, "has-read-icon": showReadIcon }'>
-    <div>
+    <div class='chat-message-wrapper'>
       <div v-if='shouldShowTime' class='chat-message-time'>{{ formattedTime }}</div>
       <div class='chat-message-text' @click='showTime = !showTime'>
         {{ message.text }}
@@ -55,6 +55,12 @@
     margin-left: .5rem;
     margin-right: auto;
 
+    .chat-message-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
     .chat-message-time {
       margin-left: .35rem;
       padding-top: .25rem;
@@ -70,6 +76,10 @@
     &.is-author {
       margin-left: auto;
       margin-right: 1.5rem;
+
+      .chat-message-wrapper {
+        align-items: flex-end;
+      }
 
       .chat-message-time {
         margin-left: 0;
