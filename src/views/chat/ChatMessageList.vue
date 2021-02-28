@@ -88,7 +88,7 @@
       },
 
       updateReadStatus() {
-        if (this.messages[0].id !== this.lastRead[this.uid]) {
+        if (this.messages[0].author !== this.uid && this.messages[0].id !== this.lastRead[this.uid]) {
           this.chat.docReference.collection('lastRead').doc('_').set({
             lastRead: {
               [this.uid]: this.messages[0].id,
