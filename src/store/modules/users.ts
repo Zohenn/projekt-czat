@@ -7,11 +7,15 @@ interface UsersState {
   users: {[key: string]: AppUser};
 }
 
+const initialState: () => UsersState = () => {
+  return {
+    users: {}
+  };
+};
+
 export const users: Module<UsersState, any> = {
   namespaced: true,
-  state: {
-    users: {}
-  },
+  state: initialState(),
 
   getters: {
     getUserByUid: state => (uid: string) => state.users[uid],
@@ -28,6 +32,10 @@ export const users: Module<UsersState, any> = {
         throw 'Użytkownik o podanym uid nie istnieje';
       }
       state.users[userSnapshot.id] = userSnapshot.data() as AppUser;
+    },
+
+    reset({ state }) {
+      Object.assign(state, initialState());
     }
   }
 }

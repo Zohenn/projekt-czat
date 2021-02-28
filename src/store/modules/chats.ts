@@ -9,13 +9,17 @@ interface ChatsState {
   lastChatsSubscription: (() => void) | undefined;
 }
 
-export const chats: Module<ChatsState, any> = {
-  namespaced: true,
-  state: {
+const initialState: () => ChatsState = () => {
+  return {
     chats: {},
     lastChats: [],
     lastChatsSubscription: undefined,
-  },
+  };
+};
+
+export const chats: Module<ChatsState, any> = {
+  namespaced: true,
+  state: initialState(),
 
   getters: {
     getChatByUid: state => (uid: string) => Object.values(state.chats).find(chat => chat.users.includes(uid)),
@@ -71,10 +75,9 @@ export const chats: Module<ChatsState, any> = {
 
       await Promise.all(Array.from(users).map(u => dispatch('users/fetchUser', u, { root: true })));
 
-      // todo: close subscription
       state.lastChatsSubscription = firestore.collection('chats')
         .where('users', 'array-contains', uid)
-        .where('lastMessage.date', '>', state.lastChats[0]?.lastMessage?.date ?? null)
+        .where('lastMessage.date', '>', state.lastChats[0]?.lastMessage?.date ?? new Date(0))
         .orderBy('lastMessage.date', 'desc')
         .withConverter(getConverter(Chat))
         .onSnapshot(querySnapshot => {
@@ -92,6 +95,11 @@ export const chats: Module<ChatsState, any> = {
 
           state.lastChats.unshift(...newChats);
         });
+    },
+
+    reset({ state }) {
+      state.lastChatsSubscription?.();
+      Object.assign(state, initialState());
     }
   }
 }

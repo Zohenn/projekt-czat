@@ -2,6 +2,7 @@
   <PromiseHandler :promise='initPromise'>
     <div id='last-chats-container'>
       <ChatListItem v-for='chat in chats' :key='chat.id' :chat='chat'/>
+      <div v-if='chats.length === 0' class='centered-flex'>Tutaj pojawią się ostatnie wiadomości</div>
     </div>
   </PromiseHandler>
 </template>

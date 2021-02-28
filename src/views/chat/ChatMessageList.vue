@@ -9,6 +9,7 @@
       </template>
       <PromiseHandler v-if='fetchMorePromise' :promise='fetchMorePromise' class='centered-flex'
                       style='padding-top: .5rem;'/>
+      <div v-if='messages.length === 0' class='centered-flex'>Napisz pierwszą wiadomość</div>
     </div>
   </PromiseHandler>
 </template>
@@ -74,10 +75,12 @@
               })
         });
 
-        this.updateReadStatus();
+        if(this.messages.length) {
+          this.updateReadStatus();
+        }
 
         this.newMessagesSubscriber = this.chat.docReference?.collection('messages')
-            .where('date', '>', this.messages[0]?.date ?? null)
+            .where('date', '>', this.messages[0]?.date ?? new Date(0))
             .orderBy('date', 'desc')
             .withConverter(getConverter(Message))
             .onSnapshot(querySnapshot => {
