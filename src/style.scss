@@ -1,5 +1,23 @@
 $primary: #009999;
 
+:root {
+  --original-primary: 0, 153, 153;
+  --primary: 0, 153, 153;
+  --primary-color: rgb(var(--primary));
+  --primary-color-fade: rgba(var(--primary), 0.6);
+  --primary-color-fade-strong: rgba(var(--primary), 0.2);
+  --error-color: #b00020;
+  --error-color-fade: #{transparentize(#b00020, 0.4)};
+  --error-color-fade-strong: #{transparentize(#b00020, 0.8)};
+  --grey: #d0d0d0;
+  --grey-light: #e0e0e0;
+  --grey-darker: #bfbfbf;
+  --grey-dark: #999999;
+  --grey-bg: #fafafa;
+  --grey-text-light: #737373;
+  --grey-text: #565656;
+}
+
 * {
   box-sizing: border-box;
 
@@ -31,19 +49,6 @@ html {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --primary-color: #{$primary};
-  --primary-color-fade: #{transparentize($primary, 0.4)};
-  --primary-color-fade-strong: #{transparentize($primary, 0.8)};
-  --error-color: #b00020;
-  --error-color-fade: #{transparentize(#b00020, 0.4)};
-  --error-color-fade-strong: #{transparentize(#b00020, 0.8)};
-  --grey: #d0d0d0;
-  --grey-light: #e0e0e0;
-  --grey-darker: #bfbfbf;
-  --grey-dark: #999999;
-  --grey-bg: #fafafa;
-  --grey-text-light: #737373;
-  --grey-text: #565656;
 }
 
 body {

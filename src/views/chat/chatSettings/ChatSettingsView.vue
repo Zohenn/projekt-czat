@@ -1,9 +1,18 @@
 <template>
   <div id='chat-settings-container'>
-    <div style='max-width: 560px;'>
-      <div class='chat-setting-name'>Pseudonimy</div>
-      <ChatSettingNickname v-for='uid in chat.users' :key='uid' :uid='uid' :nickname='chat.nicknames[uid] ?? ""'
-                           @setNickname='setNickname(uid, $event)'/>
+    <div class='chat-setting'>
+      <div style='max-width: 560px;'>
+        <div class='chat-setting-name'>Pseudonimy</div>
+        <ChatSettingNickname v-for='uid in chat.users' class='chat-setting-wrapper' :key='uid' :uid='uid'
+                             :nickname='chat.nicknames[uid] ?? ""'
+                             @setNickname='setNickname(uid, $event)'/>
+      </div>
+    </div>
+    <div class='chat-setting'>
+      <div style='max-width: 560px;'>
+        <div class='chat-setting-name'>Kolor czatu</div>
+        <ChatSettingColor :color='chat.color' @setColor='setColor($event)'/>
+      </div>
     </div>
   </div>
 </template>
@@ -14,10 +23,11 @@
   import ChatSettingNickname from "@/views/chat/chatSettings/ChatSettingNickname.vue";
   import firebase from "firebase";
   import FieldValue = firebase.firestore.FieldValue;
+  import ChatSettingColor from "@/views/chat/chatSettings/ChatSettingColor.vue";
 
   export default defineComponent({
     name: "ChatSettingsView",
-    components: { ChatSettingNickname },
+    components: { ChatSettingColor, ChatSettingNickname },
     props: {
       chat: {
         required: true,
@@ -60,6 +70,21 @@
           });
           await batch.commit();
         }
+      },
+
+      async setColor(color: string) {
+        if (color === this.chat.color) {
+          return;
+        }
+
+        const batch = this.chat.docReference.firestore.batch();
+        batch.update(this.chat.docReference, { color });
+        batch.set(this.chat.docReference.collection('messages').doc(), {
+          author: 'system',
+          date: FieldValue.serverTimestamp(),
+          text: `${this.$store.state.auth.user.displayName} zmienił kolor czatu`,
+        });
+        await batch.commit();
       }
     }
   })
@@ -68,6 +93,19 @@
 <style lang='scss'>
   #chat-settings-container {
     padding: 1rem;
+  }
+
+  .chat-setting {
+    margin-top: 1rem;
+    border-bottom: 1px solid var(--grey);
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      border-bottom: 0;
+    }
   }
 
   .chat-setting-name {

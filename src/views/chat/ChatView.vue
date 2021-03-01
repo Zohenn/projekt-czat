@@ -36,6 +36,16 @@
   import Chat from "@/entities/chat";
   import AppUser from "@/entities/appUser";
 
+  function hexToRgb(hex: string): string | null {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
+
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
+  }
+
   export default defineComponent({
     name: "ChatView",
     components: { PromiseHandler },
@@ -51,6 +61,23 @@
       }
     },
 
+    created() {
+      this.loadPromise.then(() => {
+        this.setColor();
+      });
+    },
+
+    beforeUnmount() {
+      const root = document.documentElement;
+      root.style.setProperty('--primary', root.style.getPropertyValue('--original-primary'))
+    },
+
+    watch: {
+      chat() {
+        this.setColor();
+      }
+    },
+
     computed: {
       chat(): Chat {
         return this.$store.getters['chats/getChatByUid'](this.uid);
@@ -60,6 +87,16 @@
         return this.$store.getters['users/getUserByUid'](this.uid);
       },
     },
+
+    methods: {
+      setColor() {
+        const { color } = this.chat;
+        const colorAsRgb = hexToRgb(color as string);
+        if (colorAsRgb) {
+          document.documentElement.style.setProperty('--primary', colorAsRgb);
+        }
+      }
+    }
   })
 </script>
 

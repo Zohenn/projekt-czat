@@ -10,7 +10,7 @@ interface LastMessage {
 
 @StaticImplements<FirestoreDocumentInterface<Chat>>()
 export default class Chat extends FirestoreDocument {
-  constructor(public users: string[], public lastMessage?: LastMessage, public nicknames?: { [key: string]: string }) {
+  constructor(public users: string[], public lastMessage?: LastMessage, public nicknames?: { [key: string]: string }, public color?: string) {
     super();
   }
 
@@ -19,7 +19,7 @@ export default class Chat extends FirestoreDocument {
     const chat = new Chat(data.users, {
       ...data.lastMessage,
       date: data.lastMessage?.date?.toDate()
-    }, { ...data.nicknames });
+    }, { ...data.nicknames }, data.color ?? '#009999');
     chat.setDocReference(snapshot.ref);
     return chat;
   }

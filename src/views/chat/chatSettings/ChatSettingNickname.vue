@@ -1,5 +1,5 @@
 <template>
-  <div class='chat-setting-wrapper chat-setting-nickname' :class='{ "active": active }' @click='active = true'>
+  <div class='chat-setting-nickname' :class='{ "active": active }' @click='active = true'>
     <div class='user-display-name'>{{ user.displayName }}</div>
     <form class='user-nickname-form' autocomplete='off' @submit.prevent='$emit("setNickname", newNickname); active = false'>
       <label :for='user.id + "-nickname"'/>
