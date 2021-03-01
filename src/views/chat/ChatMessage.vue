@@ -71,6 +71,7 @@
       padding: .5rem .75rem;
       background-color: var(--grey-light);
       border-radius: 8px;
+      white-space: pre-wrap;
     }
 
     &.is-author {

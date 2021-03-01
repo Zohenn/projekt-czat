@@ -189,9 +189,10 @@
     }
 
     .chat-system-message {
-      text-align: center;
+      font-size: .9rem;
+      padding: .75rem 0.5rem;
       color: var(--grey-text-light);
-      padding: 1rem 0.5rem;
+      text-align: center;
     }
   }
 </style>

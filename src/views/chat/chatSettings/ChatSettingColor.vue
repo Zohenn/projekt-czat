@@ -6,7 +6,7 @@
         <input type='radio' :id='"chat-color-" + color' name='chat-color' v-model='newColor' :value='color'/>
       </label>
     </div>
-    <button class='icon-btn' style='margin-left: .25rem;'
+    <button class='icon-btn'
             :style='{ "visibility": newColor !== color ? "visible": "hidden" }' @click='$emit("setColor", newColor)'>
       <span class='material-icons' style='font-size: 18px;'>done</span>
     </button>
@@ -43,7 +43,7 @@
 
   .chat-color-wrapper {
     display: flex;
-    margin-right: .25rem;
+    margin-right: .5rem;
     padding: 3px;
     border: 1px solid var(--grey);
     border-radius: 8px;
