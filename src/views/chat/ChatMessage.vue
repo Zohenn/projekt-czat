@@ -6,7 +6,7 @@
         <span>{{ message.text }}</span>
       </div>
       <div v-if='message.images.length > 0' class='chat-message-images'>
-        <ChatMessageImage v-for='image in message.images' :key='image' :storageRef='getRefForImage(image)'/>
+        <img v-for='image in message.images' :key='image' :src='$store.state.images.urls[`chats/${chat.id}/images/${image}`]' alt='Zdjęcie do wiadomości'/>
       </div>
     </div>
     <span v-if='showReadIcon' class='material-icons read-icon'>visibility</span>
@@ -17,14 +17,12 @@
   import { defineComponent } from 'vue';
   import Message from "@/entities/message";
   import { firebaseStorage } from "@/firebase";
-  import ChatMessageImage from "@/views/chat/ChatMessageImage.vue";
   import Chat from "@/entities/chat";
   import firebase from 'firebase';
   import Reference = firebase.storage.Reference;
 
   export default defineComponent({
     name: "ChatMessage",
-    components: { ChatMessageImage },
     props: {
       chat: {
         required: true,

@@ -1,13 +1,15 @@
 <template>
   <PromiseHandler :promise='initPromise' class='centered-flex'>
     <div id='chat-messages-container' v-bind='$attrs' ref='container' @scroll='onScroll'>
-      <ChatMessage v-for='message in pendingMessages' :key='message.id' :chat='chat' :message='message' :pending='true'/>
+      <ChatMessage v-for='message in pendingMessages' :key='message.id' :chat='chat' :message='message'
+                   :pending='true'/>
       <template v-for='(message, i) in messages' :key='message.id'>
         <template v-if='message.isSystem'>
           <div class='chat-system-message'>{{ message.text }}</div>
         </template>
         <template v-else>
-          <ChatMessage :chat='chat' :message='message' :forceShowTime='forceShowTime(i)' :showReadIcon='showReadIcon(message)'/>
+          <ChatMessage :chat='chat' :message='message' :forceShowTime='forceShowTime(i)'
+                       :showReadIcon='showReadIcon(message)'/>
           <div v-if='showDate(i)' class='chat-message-date' :class='{ "is-first": i === messages.length - 1 }'>
             {{ formatDate(message) }}
           </div>
@@ -76,7 +78,7 @@
         querySnapshot.docs.forEach(snapshot => this.messages.push(snapshot.data()));
         this.canFetchMore = querySnapshot.docs.length == 20;
 
-        await new Promise(resolve => {
+        const lastReadPromise = new Promise(resolve => {
           this.lastReadSubscriber = this.chat.docReference.collection('lastRead').doc('_')
               .onSnapshot(snapshot => {
                 if (snapshot.exists) {
@@ -85,6 +87,10 @@
                 resolve();
               })
         });
+
+
+
+        await Promise.all([lastReadPromise, this.loadImagesForMessages(this.messages)])
 
         if (this.messages.length) {
           this.updateReadStatus();
@@ -102,15 +108,16 @@
                   const message = docChange.doc.data();
                   newMessages.push(message);
 
-                  if(!message.isSystem){
+                  if (!message.isSystem) {
                     this.$emit('newMessage', message);
-                  }else{
+                  } else {
                     hasSystemMessage = true;
                   }
                 });
-                this.messages.unshift(...newMessages);
 
-                if(hasSystemMessage){
+                this.loadImagesForMessages(newMessages).then(() => this.messages.unshift(...newMessages));
+
+                if (hasSystemMessage) {
                   this.$store.dispatch('chats/refresh', this.chat.id);
                 }
 
@@ -158,6 +165,25 @@
         return message.author === this.uid && this.lastRead[this.chat.getOtherUserTo(this.uid)] === message.id;
       },
 
+      loadImagesForMessages(messages: Message[]): Promise<void[]> {
+        const imagePromises = [] as Promise<void>[];
+
+        for (const message of messages) {
+          if (message.images.length > 0) {
+            imagePromises.push(...message.images.map(async image => {
+              const url = await this.$store.dispatch('images/getUrlForPath', `chats/${this.chat.id}/images/${image}`);
+              await new Promise(resolve => {
+                const img = new Image();
+                img.onload = resolve;
+                img.src = url;
+              });
+            }));
+          }
+        }
+
+        return Promise.all(imagePromises);
+      },
+
       async fetchMore() {
         const querySnapshot = await this.chat.docReference.collection('messages')
             .where('date', '<', this.messages[this.messages.length - 1].date)
@@ -166,7 +192,10 @@
             .withConverter(getConverter(Message))
             .get();
 
-        querySnapshot.docs.forEach(snapshot => this.messages.push(snapshot.data()));
+        const newMessages = [] as Message[];
+        querySnapshot.docs.forEach(snapshot => newMessages.push(snapshot.data()));
+        await this.loadImagesForMessages(newMessages);
+        this.messages.push(...newMessages);
         this.canFetchMore = querySnapshot.docs.length === 10;
 
         this.fetchMorePromise = undefined;
