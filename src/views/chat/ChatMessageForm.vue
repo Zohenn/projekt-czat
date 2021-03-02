@@ -3,7 +3,7 @@
     <div v-show='images.length > 0' class='chat-message-form-images'>
       <div v-for='(image, i) in images' :key='image' class='chat-message-form-image'>
         <img :src='image' alt='Zdjęcie do wiadomości' />
-        <div class='chat-message-image-remove' @click='images.splice(i, 1)'>
+        <div class='chat-message-image-overlay' @click='images.splice(i, 1)'>
           <span class='material-icons'>close</span>
         </div>
       </div>
@@ -32,9 +32,11 @@
   import Chat from "@/entities/chat";
   import firebase from "firebase";
   import FieldValue = firebase.firestore.FieldValue;
+  import Message from "@/entities/message";
 
   export default defineComponent({
     name: "ChatMessageForm",
+    emits: ['sendMessage'],
     props: {
       chat: {
         required: true,
@@ -73,15 +75,21 @@
         }
 
         const batch = this.chat.docReference.firestore.batch();
-        const message = {
-          author: this.$store.getters['auth/uid'],
-          date: FieldValue.serverTimestamp(),
-          text: this.text,
-        };
+        const message = new Message(
+          this.$store.getters['auth/uid'],
+          new Date(),
+          this.text,
+        );
+        const messageRef = this.chat.docReference.collection('messages').doc();
+        message.setDocReference(messageRef);
 
-        batch.set(this.chat.docReference.collection('messages').doc(), message);
+        this.$emit('sendMessage', message);
+
+        const messageData = { ...message, date: FieldValue.serverTimestamp() };
+
+        batch.set(messageRef, messageData);
         batch.update(this.chat.docReference, {
-          lastMessage: message,
+          lastMessage: messageData,
         });
 
         this.text = '';
@@ -118,7 +126,7 @@
         object-fit: cover;
       }
 
-      .chat-message-image-remove {
+      .chat-message-image-overlay {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -139,7 +147,7 @@
       }
 
       &:hover {
-        .chat-message-image-remove {
+        .chat-message-image-overlay {
           background-color: rgba(0, 0, 0, 0.3);
 
           & > span {

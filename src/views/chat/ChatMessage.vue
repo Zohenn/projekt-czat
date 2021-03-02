@@ -1,5 +1,5 @@
 <template>
-  <div class='chat-message' :class='{ "is-author": isAuthor, "has-read-icon": showReadIcon }'>
+  <div class='chat-message' :class='{ "is-author": isAuthor, "has-read-icon": showReadIcon, "pending": pending }'>
     <div class='chat-message-wrapper'>
       <div v-if='shouldShowTime' class='chat-message-time'>{{ formattedTime }}</div>
       <div class='chat-message-text' @click='showTime = !showTime'>
@@ -23,6 +23,7 @@
         type: Message,
       },
       showReadIcon: Boolean,
+      pending: Boolean,
     },
     data() {
       return {
@@ -102,6 +103,10 @@
       font-size: 1rem;
       padding: 0 .25rem;
       color: var(--grey-text);
+    }
+
+    &.pending {
+      opacity: .8;
     }
   }
 </style>

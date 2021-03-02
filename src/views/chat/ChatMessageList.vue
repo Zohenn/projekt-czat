@@ -1,6 +1,7 @@
 <template>
   <PromiseHandler :promise='initPromise' class='centered-flex'>
     <div id='chat-messages-container' v-bind='$attrs' ref='container' @scroll='onScroll'>
+      <ChatMessage v-for='message in pendingMessages' :key='message.id' :message='message' :pending='true'/>
       <template v-for='(message, i) in messages' :key='message.id'>
         <template v-if='message.isSystem'>
           <div class='chat-system-message'>{{ message.text }}</div>
@@ -31,11 +32,16 @@
 
   export default defineComponent({
     name: "ChatMessageList",
+    emits: ['newMessage' as string],
     components: { ChatMessage, PromiseHandler },
     props: {
       chat: {
         required: true,
         type: Chat,
+      },
+      pendingMessages: {
+        required: true,
+        type: Array,
       }
     },
     data() {
@@ -90,11 +96,21 @@
             .withConverter(getConverter(Message))
             .onSnapshot(querySnapshot => {
               if (querySnapshot.docChanges().length > 0) {
+                let hasSystemMessage = false;
                 const newMessages: Message[] = [];
-                querySnapshot.docChanges().forEach(docChange => newMessages.push(docChange.doc.data()));
+                querySnapshot.docChanges().forEach(docChange => {
+                  const message = docChange.doc.data();
+                  newMessages.push(message);
+
+                  if(!message.isSystem){
+                    this.$emit('newMessage', message);
+                  }else{
+                    hasSystemMessage = true;
+                  }
+                });
                 this.messages.unshift(...newMessages);
 
-                if(newMessages.some(message => message.isSystem)){
+                if(hasSystemMessage){
                   this.$store.dispatch('chats/refresh', this.chat.id);
                 }
 
