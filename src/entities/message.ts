@@ -10,7 +10,7 @@ export default class Message extends FirestoreDocument {
 
   static fromFirestore(snapshot: QueryDocumentSnapshot): Message {
     const data = snapshot.data();
-    const message = new Message(data.author, data.date.toDate(), data.text, data.images);
+    const message = new Message(data.author, data.date.toDate(), data.text, data.images ?? []);
     message.setDocReference(snapshot.ref);
     return message;
   }

@@ -96,7 +96,6 @@
 
         this.text = '';
         (this.$refs.input as HTMLElement).innerHTML = '';
-        this.images.splice(0, this.images.length);
 
         const imageFiles = [] as string[];
 
@@ -109,6 +108,8 @@
             imageFiles.push(filename);
             uploadPromises.push(imagesRef.child(filename).putString(image.data, 'data_url'));
           }
+
+          this.images.splice(0, this.images.length);
 
           await Promise.all(uploadPromises);
         }

@@ -2,8 +2,11 @@
   <div class='chat-message' :class='{ "is-author": isAuthor, "has-read-icon": showReadIcon, "pending": pending }'>
     <div class='chat-message-wrapper'>
       <div v-if='shouldShowTime' class='chat-message-time'>{{ formattedTime }}</div>
-      <div class='chat-message-text' @click='showTime = !showTime'>
-        {{ message.text }}
+      <div class='chat-message-text' :class='{ "has-images": message.images.length > 0 }' @click='showTime = !showTime'>
+        <span>{{ message.text }}</span>
+      </div>
+      <div v-if='message.images.length > 0' class='chat-message-images'>
+        <ChatMessageImage v-for='image in message.images' :key='image' :storageRef='getRefForImage(image)'/>
       </div>
     </div>
     <span v-if='showReadIcon' class='material-icons read-icon'>visibility</span>
@@ -13,10 +16,20 @@
 <script lang='ts'>
   import { defineComponent } from 'vue';
   import Message from "@/entities/message";
+  import { firebaseStorage } from "@/firebase";
+  import ChatMessageImage from "@/views/chat/ChatMessageImage.vue";
+  import Chat from "@/entities/chat";
+  import firebase from 'firebase';
+  import Reference = firebase.storage.Reference;
 
   export default defineComponent({
     name: "ChatMessage",
+    components: { ChatMessageImage },
     props: {
+      chat: {
+        required: true,
+        type: Chat,
+      },
       forceShowTime: Boolean,
       message: {
         required: true,
@@ -43,11 +56,17 @@
       shouldShowTime(): boolean {
         return this.forceShowTime || this.showTime;
       }
+    },
+
+    methods: {
+      getRefForImage(imageFilename: string): Reference {
+        return firebaseStorage.ref(`chats/${this.chat.id}/images/${imageFilename}`);
+      }
     }
   })
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
   .chat-message {
     max-width: 60%;
     display: flex;
@@ -60,6 +79,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      width: 100%;
     }
 
     .chat-message-time {
@@ -69,10 +89,19 @@
     }
 
     .chat-message-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
       padding: .5rem .75rem;
       background-color: var(--grey-light);
       border-radius: 8px;
       white-space: pre-wrap;
+
+      &.has-images {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        padding-bottom: .25rem;
+      }
     }
 
     &.is-author {
@@ -107,6 +136,21 @@
 
     &.pending {
       opacity: .5;
+    }
+
+    .chat-message-images {
+      display: flex;
+      border-radius: 8px 0 8px 8px;
+      overflow: hidden;
+
+      img {
+        max-width: 50%;
+        object-fit: cover;
+
+        &:only-child {
+          max-width: 100%;
+        }
+      }
     }
   }
 </style>

@@ -6,6 +6,7 @@ interface LastMessage {
   author: string;
   date: Date;
   text: string;
+  images: string[];
 }
 
 @StaticImplements<FirestoreDocumentInterface<Chat>>()

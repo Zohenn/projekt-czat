@@ -1,13 +1,13 @@
 <template>
   <PromiseHandler :promise='initPromise' class='centered-flex'>
     <div id='chat-messages-container' v-bind='$attrs' ref='container' @scroll='onScroll'>
-      <ChatMessage v-for='message in pendingMessages' :key='message.id' :message='message' :pending='true'/>
+      <ChatMessage v-for='message in pendingMessages' :key='message.id' :chat='chat' :message='message' :pending='true'/>
       <template v-for='(message, i) in messages' :key='message.id'>
         <template v-if='message.isSystem'>
           <div class='chat-system-message'>{{ message.text }}</div>
         </template>
         <template v-else>
-          <ChatMessage :message='message' :forceShowTime='forceShowTime(i)' :showReadIcon='showReadIcon(message)'/>
+          <ChatMessage :chat='chat' :message='message' :forceShowTime='forceShowTime(i)' :showReadIcon='showReadIcon(message)'/>
           <div v-if='showDate(i)' class='chat-message-date' :class='{ "is-first": i === messages.length - 1 }'>
             {{ formatDate(message) }}
           </div>

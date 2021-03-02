@@ -5,7 +5,7 @@
       <div class='last-chat-user'>{{ chat.nicknames[otherUser.id] ?? otherUser.displayName }}</div>
       <div class='last-chat-message'>
         <div class='last-chat-message-text'>
-          {{ `${chat.lastMessage.author === uid ? 'Ty: ' : ''}${chat.lastMessage.text}` }}
+          <span>{{ `${chat.lastMessage.author === uid ? 'Ty: ' : ''}${chat.lastMessage.text}` }}</span>
         </div>
         <span class='spacer-dot'></span>
         <div class='last-chat-message-time'>{{ formattedTime }}</div>
