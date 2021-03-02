@@ -6,23 +6,22 @@
         <span>{{ message.text }}</span>
       </div>
       <div v-if='message.images.length > 0' class='chat-message-images'>
-        <img v-for='image in message.images' :key='image' :src='$store.state.images.urls[`chats/${chat.id}/images/${image}`]' alt='Zdjęcie do wiadomości'/>
+        <img v-for='image in message.images' :key='image' :src='$store.state.images.urls[`${chat.imagesPath}/${image}`]' alt='Zdjęcie do wiadomości'/>
       </div>
     </div>
-    <span v-if='showReadIcon' class='material-icons read-icon'>visibility</span>
+    <MdIcon v-if='showReadIcon' class='read-icon'>visibility</MdIcon>
   </div>
 </template>
 
 <script lang='ts'>
   import { defineComponent } from 'vue';
   import Message from "@/entities/message";
-  import { firebaseStorage } from "@/firebase";
   import Chat from "@/entities/chat";
-  import firebase from 'firebase';
-  import Reference = firebase.storage.Reference;
+  import MdIcon from "@/components/MdIcon.vue";
 
   export default defineComponent({
     name: "ChatMessage",
+    components: { MdIcon },
     props: {
       chat: {
         required: true,
@@ -55,12 +54,6 @@
         return this.forceShowTime || this.showTime;
       }
     },
-
-    methods: {
-      getRefForImage(imageFilename: string): Reference {
-        return firebaseStorage.ref(`chats/${this.chat.id}/images/${imageFilename}`);
-      }
-    }
   })
 </script>
 

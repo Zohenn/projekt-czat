@@ -3,7 +3,7 @@
     <div class='user-search-wrapper' :class='{ "results-visible": resultsVisible }'>
       <label for='user-search' class='d-none'>Imię, nazwisko</label>
       <input id='user-search' type='text' placeholder='Imię, nazwisko' v-debounce='search'>
-      <span class='material-icons search-icon'>search</span>
+      <MdIcon class='search-icon'>search</MdIcon>
     </div>
     <ul v-if='resultsVisible' class='search-results'>
       <template v-if='loading'>
@@ -26,9 +26,11 @@
   import { getConverter } from "@/entities/firestoreDocument";
   import firebase from "firebase";
   import QueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot;
+  import MdIcon from "@/components/MdIcon.vue";
 
   export default defineComponent({
     name: "UserSearch",
+    components: { MdIcon },
     data() {
       return {
         loading: false,

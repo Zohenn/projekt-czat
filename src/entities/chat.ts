@@ -35,4 +35,8 @@ export default class Chat extends FirestoreDocument {
   getOtherUserTo(uid: string): string {
     return this.users.find(u => u !== uid) as string;
   }
+
+  get imagesPath(): string {
+    return `chats/${this.id}/images`;
+  }
 }

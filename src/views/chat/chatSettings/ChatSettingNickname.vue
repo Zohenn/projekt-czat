@@ -6,22 +6,24 @@
       <input :id='user.id + "-nickname"' class='user-nickname' type='text' :disabled='!active'
              v-model.trim='newNickname'/>
       <button type='submit' class='icon-btn' v-show='active'>
-        <span class='material-icons' style='font-size: 18px;'>done</span>
+        <MdIcon style='font-size: 18px;'>done</MdIcon>
       </button>
       <button type='button' class='icon-btn close-btn' v-show='active' @click.stop='active = false'>
-        <span class='material-icons' style='font-size: 18px;'>close</span>
+        <MdIcon style='font-size: 18px;'>close</MdIcon>
       </button>
     </form>
-    <span class='material-icons edit-icon'>edit</span>
+    <MdIcon class='edit-icon'>edit</MdIcon>
   </div>
 </template>
 
 <script lang='ts'>
   import { defineComponent } from 'vue';
   import AppUser from "@/entities/appUser";
+  import MdIcon from "@/components/MdIcon.vue";
 
   export default defineComponent({
     name: "ChatSettingNickname",
+    components: { MdIcon },
     emits: ['setNickname'],
     props: {
       nickname: {

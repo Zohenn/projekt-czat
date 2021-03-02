@@ -1,11 +1,11 @@
 <template>
   <div id='navbar'>
     <div id='navbar-content'>
-      <router-link to='/' style='display: inline-flex;'><img src='../assets/logo2.png' alt='Logo' id='logo'/></router-link>
+      <router-link to='/' style='display: inline-flex;'><img src='../assets/logo.png' alt='Logo' id='logo'/></router-link>
       <template v-if='isSignedIn'>
         <UserSearch/>
         <button class='icon-btn' @click='signOut'>
-          <span class='material-icons'>logout</span>
+          <MdIcon>logout</MdIcon>
         </button>
       </template>
     </div>
@@ -16,12 +16,13 @@
   import { defineComponent } from 'vue';
   import { createNamespacedHelpers } from "vuex";
   import UserSearch from "@/components/UserSearch.vue";
+  import MdIcon from "@/components/MdIcon.vue";
 
   const { mapGetters } = createNamespacedHelpers('auth');
 
   export default defineComponent({
     name: "Navbar",
-    components: { UserSearch },
+    components: { MdIcon, UserSearch },
     computed: {
       ...mapGetters(['isSignedIn']),
     },

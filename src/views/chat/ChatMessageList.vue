@@ -171,7 +171,7 @@
         for (const message of messages) {
           if (message.images.length > 0) {
             imagePromises.push(...message.images.map(async image => {
-              const url = await this.$store.dispatch('images/getUrlForPath', `chats/${this.chat.id}/images/${image}`);
+              const url = await this.$store.dispatch('images/getUrlForPath', `${this.chat.imagesPath}/${image}`);
               await new Promise(resolve => {
                 const img = new Image();
                 img.onload = resolve;

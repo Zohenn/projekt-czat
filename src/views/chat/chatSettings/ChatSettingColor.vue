@@ -8,16 +8,18 @@
     </div>
     <button class='icon-btn'
             :style='{ "visibility": newColor !== color ? "visible": "hidden" }' @click='$emit("setColor", newColor)'>
-      <span class='material-icons' style='font-size: 18px;'>done</span>
+      <MdIcon style='font-size: 18px;'>done</MdIcon>
     </button>
   </div>
 </template>
 
 <script lang='ts'>
   import { defineComponent } from 'vue';
+  import MdIcon from "@/components/MdIcon.vue";
 
   export default defineComponent({
     name: "ChatSettingColor",
+    components: { MdIcon },
     emits: ['setColor'],
     props: {
       color: {

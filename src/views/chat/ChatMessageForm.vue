@@ -4,7 +4,7 @@
       <div v-for='(image, i) in images' :key='image' class='chat-message-form-image'>
         <img :src='image.data' alt='Zdjęcie do wiadomości'/>
         <div class='chat-message-image-overlay' @click='images.splice(i, 1)'>
-          <span class='material-icons'>close</span>
+          <MdIcon>close</MdIcon>
         </div>
       </div>
     </div>
@@ -13,7 +13,7 @@
         <input id='chat-message-add-image' ref='imageForm' type='file' accept='image/*' multiple @change='addImages'/>
       </label>
       <button class='icon-btn' @click='$refs.imageForm.click()'>
-        <span class='material-icons'>add_photo_alternate</span>
+        <MdIcon>add_photo_alternate</MdIcon>
       </button>
       <div style='flex-grow: 1; margin: 0 1rem;'>
         <div id='chat-message-input-wrapper'>
@@ -22,7 +22,7 @@
           <div v-show='text === ""' class='placeholder'>Aa</div>
         </div>
       </div>
-      <button class='icon-btn' @click='sendMessage'><span class='material-icons'>send</span></button>
+      <button class='icon-btn' @click='sendMessage'><MdIcon>send</MdIcon></button>
     </div>
   </div>
 </template>
@@ -36,6 +36,7 @@
   import { firebaseStorage } from "@/firebase";
   import UploadTask = firebase.storage.UploadTask;
   import { v4 as uuidv4 } from 'uuid';
+  import MdIcon from "@/components/MdIcon.vue";
 
   interface ChatMessageFormImage {
     data: string;
@@ -44,6 +45,7 @@
 
   export default defineComponent({
     name: "ChatMessageForm",
+    components: { MdIcon },
     emits: ['sendMessage'],
     props: {
       chat: {
@@ -100,7 +102,7 @@
         const imageFiles = [] as string[];
 
         if (this.images.length > 0) {
-          const imagesRef = firebaseStorage.ref(`chats/${this.chat.id}/images`);
+          const imagesRef = firebaseStorage.ref(this.chat.imagesPath);
           const uploadPromises = [] as UploadTask[];
           for (const image of this.images) {
             const filenameParts = image.filename.split('.');
@@ -146,11 +148,12 @@
       width: 3rem;
       height: 3rem;
       margin-left: .5rem;
+      border-radius: 8px;
+      overflow: hidden;
 
       > img {
         width: 100%;
         height: 100%;
-        border-radius: 8px;
         object-fit: cover;
       }
 
@@ -163,7 +166,6 @@
         display: grid;
         place-content: center;
         background-color: rgba(0, 0, 0, 0);
-        border-radius: 8px;
         z-index: 1;
         cursor: pointer;
         transition: background-color .2s;

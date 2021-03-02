@@ -8,17 +8,17 @@
         </div>
         <div id='chat-tabs'>
           <router-link :to='{ name: "chat-messages" }' tag='button' class='tab'>
-            <span class='material-icons'>chat_bubble</span>
+            <MdIcon>chat_bubble</MdIcon>
           </router-link>
           <router-link :to='{ name: "chat-images" }' tag='button' class='tab'>
-            <span class='material-icons'>image</span>
+            <MdIcon>image</MdIcon>
           </router-link>
           <router-link :to='{ name: "chat-settings" }' tag='button' class='tab'>
-            <span class='material-icons'>settings</span>
+            <MdIcon>settings</MdIcon>
           </router-link>
         </div>
         <button class='icon-btn' style='margin: .25rem 0 .25rem auto;' @click='$router.push("/")'>
-          <span class='material-icons'>close</span>
+          <MdIcon>close</MdIcon>
         </button>
       </div>
       <router-view v-slot='{ Component }'>
@@ -35,6 +35,7 @@
   import PromiseHandler from "@/components/PromiseHandler.vue";
   import Chat from "@/entities/chat";
   import AppUser from "@/entities/appUser";
+  import MdIcon from "@/components/MdIcon.vue";
 
   function hexToRgb(hex: string): string | null {
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -48,7 +49,7 @@
 
   export default defineComponent({
     name: "ChatView",
-    components: { PromiseHandler },
+    components: { MdIcon, PromiseHandler },
     props: {
       uid: String,
     },
