@@ -2,7 +2,7 @@
   <div id='chat-input-container'>
     <div v-show='images.length > 0' class='chat-message-form-images'>
       <div v-for='(image, i) in images' :key='image' class='chat-message-form-image'>
-        <img :src='image' alt='Zdjęcie do wiadomości' />
+        <img :src='image.data' alt='Zdjęcie do wiadomości'/>
         <div class='chat-message-image-overlay' @click='images.splice(i, 1)'>
           <span class='material-icons'>close</span>
         </div>
@@ -33,6 +33,14 @@
   import firebase from "firebase";
   import FieldValue = firebase.firestore.FieldValue;
   import Message from "@/entities/message";
+  import { firebaseStorage } from "@/firebase";
+  import UploadTask = firebase.storage.UploadTask;
+  import { v4 as uuidv4 } from 'uuid';
+
+  interface ChatMessageFormImage {
+    data: string;
+    filename: string;
+  }
 
   export default defineComponent({
     name: "ChatMessageForm",
@@ -46,7 +54,7 @@
     data() {
       return {
         text: '',
-        images: [] as string[],
+        images: [] as ChatMessageFormImage[],
       }
     },
 
@@ -55,7 +63,7 @@
         const input = e.target as HTMLInputElement;
         for (const file of input.files as FileList) {
           const reader = new FileReader();
-          reader.onload = (e) => this.images.push(e.target?.result as string);
+          reader.onload = (e) => this.images.push({ data: e.target?.result as string, filename: file.name });
           reader.readAsDataURL(file);
         }
 
@@ -76,24 +84,43 @@
 
         const batch = this.chat.docReference.firestore.batch();
         const message = new Message(
-          this.$store.getters['auth/uid'],
-          new Date(),
-          this.text,
+            this.$store.getters['auth/uid'],
+            new Date(),
+            this.text,
+            [],
         );
         const messageRef = this.chat.docReference.collection('messages').doc();
         message.setDocReference(messageRef);
 
         this.$emit('sendMessage', message);
 
-        const messageData = { ...message, date: FieldValue.serverTimestamp() };
+        this.text = '';
+        (this.$refs.input as HTMLElement).innerHTML = '';
+        this.images.splice(0, this.images.length);
+
+        const imageFiles = [] as string[];
+
+        if (this.images.length > 0) {
+          const imagesRef = firebaseStorage.ref(`chats/${this.chat.id}/images`);
+          const uploadPromises = [] as UploadTask[];
+          for (const image of this.images) {
+            const filenameParts = image.filename.split('.');
+            const filename = `${uuidv4()}.${filenameParts[filenameParts.length - 1]}`;
+            imageFiles.push(filename);
+            uploadPromises.push(imagesRef.child(filename).putString(image.data, 'data_url'));
+          }
+
+          await Promise.all(uploadPromises);
+        }
+
+        const messageData = { ...message.toFirestore(), date: FieldValue.serverTimestamp(), images: imageFiles};
 
         batch.set(messageRef, messageData);
         batch.update(this.chat.docReference, {
           lastMessage: messageData,
         });
 
-        this.text = '';
-        (this.$refs.input as HTMLElement).innerHTML = '';
+        // todo: remove images from storage if this fails
         await batch.commit();
       }
     }
