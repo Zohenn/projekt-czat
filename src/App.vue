@@ -35,7 +35,7 @@
 
 <style lang="scss">
   #app {
-    height: -webkit-fill-available;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -10,7 +10,7 @@
 
 <script lang='ts'>
   import { defineComponent } from 'vue';
-  import LoginForm from '@/components/LoginForm.vue';
+  import LoginForm from '@/views/home/LoginForm.vue';
   import { createNamespacedHelpers } from "vuex";
   import ChatList from "@/views/home/ChatList.vue";
 

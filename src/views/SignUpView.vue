@@ -5,6 +5,7 @@
         <div v-for='(field, key) in fields' :key='"sign-up-" + key' class='form-row'>
           <label :for='key'>{{ field.label }}</label>
           <input :id='key' :type='field.type' v-model.trim='model[key]' required @focusout='field.hadInteraction = true'
+                 :minlength='field.minlength'
                  :class='{"had-interaction": field.hadInteraction}'/>
           <span class='error-text'>{{ field.errorText }}</span>
         </div>
@@ -52,7 +53,8 @@
             label: 'Hasło',
             type: 'password',
             hadInteraction: false,
-            errorText: 'Pole nie może być puste',
+            errorText: 'Hasło musi mieć długość co najmniej 6 znaków',
+            minlength: 6,
           }
         },
         model: {

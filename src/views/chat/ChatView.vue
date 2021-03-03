@@ -4,7 +4,9 @@
       <div id='chat-header'>
         <div id='user-info'>
           <img src='../../assets/avatar.png' alt='Avatar'/>
-          <span>{{ chat.nicknames[uid] ?? otherUser.displayName }}</span>
+          <div>
+            <span>{{ chat.nicknames[uid] ?? otherUser.displayName }}</span>
+          </div>
         </div>
         <div id='chat-tabs'>
           <router-link v-for='tab in tabs' :key='tab.routeName' :to='{ name: tab.routeName }' class='tab'>
@@ -160,11 +162,18 @@
       font-size: 1.2rem;
       font-weight: 500;
       color: var(--grey-text);
+      overflow: hidden;
 
       img {
         height: 30px;
         margin-right: 1rem;
         border-radius: 50%;
+      }
+
+      > div {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
     }
   }
@@ -202,7 +211,7 @@
       border-radius: 8px;
       top: calc(100% - 1px);
       overflow: hidden;
-      box-shadow: 0 2px 4px 1px var(--grey-text);
+      box-shadow: 0 2px 6px 1px var(--grey-text);
 
       .chat-tab-menu-btn {
         display: flex;

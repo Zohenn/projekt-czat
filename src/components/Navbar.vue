@@ -27,9 +27,9 @@
       ...mapGetters(['isSignedIn']),
     },
     methods: {
-      signOut() {
+      async signOut() {
+        await this.$router.replace('/');
         this.$store.dispatch('auth/signOut');
-        this.$router.replace('/');
       }
     }
   })
