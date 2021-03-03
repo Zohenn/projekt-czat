@@ -7,15 +7,20 @@
           <span>{{ chat.nicknames[uid] ?? otherUser.displayName }}</span>
         </div>
         <div id='chat-tabs'>
-          <router-link :to='{ name: "chat-messages" }' tag='button' class='tab'>
-            <MdIcon>chat_bubble</MdIcon>
+          <router-link v-for='tab in tabs' :key='tab.routeName' :to='{ name: tab.routeName }' class='tab'>
+            <MdIcon>{{ tab.icon }}</MdIcon>
           </router-link>
-          <router-link :to='{ name: "chat-images" }' tag='button' class='tab'>
-            <MdIcon>image</MdIcon>
-          </router-link>
-          <router-link :to='{ name: "chat-settings" }' tag='button' class='tab'>
-            <MdIcon>settings</MdIcon>
-          </router-link>
+        </div>
+        <div id='chat-tab-btn'>
+          <button class='tab' @click.stop='tabMenuOpen = !tabMenuOpen'>
+            <MdIcon>{{ activeTab.icon }}</MdIcon>
+          </button>
+          <div v-if='tabMenuOpen' id='chat-tab-menu'>
+            <router-link v-for='tab in inactiveTabs' :key='"btn-" + tab.routeName' :to='{ name: tab.routeName }'
+                         class='chat-tab-menu-btn'>
+              <MdIcon>{{ tab.icon }}</MdIcon>
+            </router-link>
+          </div>
         </div>
         <button class='icon-btn' style='margin: .25rem 0 .25rem auto;' @click='$router.push("/")'>
           <MdIcon>close</MdIcon>
@@ -47,6 +52,11 @@
     return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
   }
 
+  interface Tab {
+    routeName: string;
+    icon: string;
+  }
+
   export default defineComponent({
     name: "ChatView",
     components: { MdIcon, PromiseHandler },
@@ -59,6 +69,21 @@
           await this.$store.dispatch('chats/fetchChat', this.uid);
           await this.$store.dispatch('users/fetchUser', this.uid);
         })(),
+        tabs: [
+          {
+            routeName: 'chat-messages',
+            icon: 'chat_bubble',
+          },
+          {
+            routeName: 'chat-images',
+            icon: 'image',
+          },
+          {
+            routeName: 'chat-settings',
+            icon: 'settings',
+          }
+        ] as Tab[],
+        tabMenuOpen: false,
       }
     },
 
@@ -66,11 +91,14 @@
       this.loadPromise.then(() => {
         this.setColor();
       });
+
+      document.body.addEventListener('click', this.closeTabMenu);
     },
 
     beforeUnmount() {
       const root = document.documentElement;
       root.style.setProperty('--primary', root.style.getPropertyValue('--original-primary'))
+      document.body.removeEventListener('click', this.closeTabMenu);
     },
 
     watch: {
@@ -87,9 +115,21 @@
       otherUser(): AppUser {
         return this.$store.getters['users/getUserByUid'](this.uid);
       },
+
+      activeTab(): Tab {
+        return this.tabs.find(tab => tab.routeName === this.$route.name) as Tab;
+      },
+
+      inactiveTabs(): Tab[] {
+        return this.tabs.filter((tab => tab.routeName !== this.$route.name));
+      }
     },
 
     methods: {
+      closeTabMenu() {
+        this.tabMenuOpen = false;
+      },
+
       setColor() {
         const { color } = this.chat;
         const colorAsRgb = hexToRgb(color as string);
@@ -129,34 +169,84 @@
     }
   }
 
-  #chat-tabs {
+  @media only screen and (max-width: 359px) {
+    #chat-tabs {
+      display: none !important;
+    }
+
+    #chat-tab-btn {
+      display: flex !important;
+    }
+  }
+
+  #chat-tabs, #chat-tab-btn {
     display: flex;
     padding: 0 1rem;
     align-self: stretch;
+    margin-bottom: -1px;
+  }
 
-    .tab {
+  #chat-tab-btn {
+    display: none;
+    position: relative;
+
+    & .tab {
+      color: var(--primary-color);
+    }
+
+    & #chat-tab-menu {
       display: flex;
-      align-items: center;
-      padding: 0 .75rem;
-      background-color: transparent;
-      border-radius: 0;
-      color: var(--grey-darker);
-      border-bottom: 2px solid transparent;
-      box-shadow: none;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background-color .2s, border-bottom-color .2s, color .2s;
+      position: absolute;
+      background-color: var(--grey-bg);
+      border: 1px solid var(--grey);
+      border-radius: 8px;
+      top: calc(100% - 1px);
+      overflow: hidden;
+      box-shadow: 0 2px 4px 1px var(--grey-text);
 
-      &:hover, &:focus {
-        color: var(--primary-color-fade);
-        background-color: var(--primary-color-fade-strong);
-        outline: 0;
-      }
+      .chat-tab-menu-btn {
+        display: flex;
+        align-items: center;
+        padding: .5rem;
+        color: var(--grey-darker);
+        text-decoration: none;
+        transition: background-color .2s, color .2s;
 
-      &.router-link-exact-active {
-        color: var(--primary-color);
-        border-bottom-color: var(--primary-color);
+        &:hover, &:focus {
+          color: var(--primary-color-fade);
+          background-color: var(--primary-color-fade-strong);
+          outline: 0;
+        }
+
+        &:first-child {
+          border-right: 1px solid var(--grey);
+        }
       }
+    }
+  }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    padding: 0 .75rem;
+    background-color: transparent;
+    border-radius: 0;
+    color: var(--grey-darker);
+    border-bottom: 2px solid transparent;
+    box-shadow: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color .2s, border-bottom-color .2s, color .2s;
+
+    &:hover, &:focus {
+      color: var(--primary-color-fade);
+      background-color: var(--primary-color-fade-strong);
+      outline: 0;
+    }
+
+    &.router-link-exact-active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
     }
   }
 </style>

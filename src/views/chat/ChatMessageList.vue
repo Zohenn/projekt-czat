@@ -235,7 +235,7 @@
 
     .chat-system-message {
       font-size: .9rem;
-      padding: .75rem 0.5rem;
+      padding: 1.25rem 1rem .5rem;
       color: var(--grey-text-light);
       text-align: center;
     }

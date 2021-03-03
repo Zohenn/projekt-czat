@@ -75,7 +75,7 @@
 
     .chat-message-time {
       margin-left: .35rem;
-      padding-top: .25rem;
+      padding-top: 1rem;
       color: var(--grey-text);
     }
 
