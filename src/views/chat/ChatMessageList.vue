@@ -88,8 +88,6 @@
               })
         });
 
-
-
         await Promise.all([lastReadPromise, this.loadImagesForMessages(this.messages)])
 
         if (this.messages.length) {
