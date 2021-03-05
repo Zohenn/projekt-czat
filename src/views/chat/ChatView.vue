@@ -5,7 +5,7 @@
         <div id='user-info'>
           <img src='../../assets/avatar.png' alt='Avatar'/>
           <div>
-            <span>{{ chat.nicknames[uid] ?? otherUser.displayName }}</span>
+            <span>{{ chat.getNicknameFor(otherUser) }}</span>
           </div>
         </div>
         <div id='chat-tabs'>

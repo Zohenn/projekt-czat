@@ -1,6 +1,7 @@
 import FirestoreDocument, { FirestoreDocumentInterface, StaticImplements } from "@/entities/firestoreDocument";
 import firebase from "firebase/app";
 import QueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot;
+import AppUser from "@/entities/appUser";
 
 interface LastMessage {
   author: string;
@@ -38,5 +39,9 @@ export default class Chat extends FirestoreDocument {
 
   get imagesPath(): string {
     return `chats/${this.id}/images`;
+  }
+
+  getNicknameFor(user: AppUser): string {
+    return this.nicknames?.[user.id] ?? user.displayName;
   }
 }

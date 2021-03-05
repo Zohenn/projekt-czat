@@ -114,6 +114,33 @@
           this.images.splice(0, this.images.length);
 
           await Promise.all(uploadPromises);
+
+          const imageBatchSnapshot = await this.chat.docReference.collection('images')
+              .orderBy('no')
+              .limitToLast(1)
+              .get();
+
+          const mappedImages = imageFiles.map(file => {
+            return {
+              author: this.$store.getters['auth/uid'],
+              date: Date,
+              file,
+            };
+          });
+
+          const imageBatchData = imageBatchSnapshot.docs[0]?.data();
+
+          if(imageBatchSnapshot.empty || imageBatchData.images.length >= 20){
+            batch.set(this.chat.docReference.collection('images').doc(), {
+              no: imageBatchSnapshot.empty ? 0 : imageBatchData.no + 1,
+              images: mappedImages,
+            }, { merge: true });
+          } else {
+            // todo: transaction? change images to map, so serverTimestamp can be used?
+            batch.set(imageBatchSnapshot.docs[0].ref, {
+              images: [...imageBatchData.images, ...mappedImages],
+            }, { merge: true });
+          }
         }
 
         const messageData = { ...message.toFirestore(), date: FieldValue.serverTimestamp(), images: imageFiles};
