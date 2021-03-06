@@ -116,11 +116,7 @@
                 const newImages = [] as ChatImage[];
                 const docChange = querySnapshot.docChanges()[0];
 
-                console.log('eee');
-                // todo:
-                if (docChange.type === 'added') {
-                  newImages.push(...docChange.doc.data().images);
-                }
+                newImages.push(...docChange.doc.data().images.filter(image => !this.images.find(i => image.file === i.file)));
 
                 await Promise.all([...newImages.map(async image => {
                   const url = await this.$store.dispatch('images/getUrlForPath', `${this.chat.imagesPath}/${image.file}`);
@@ -131,7 +127,7 @@
                   });
                 })]);
 
-                this.images.push(...newImages.reverse());
+                this.images.unshift(...newImages.reverse());
 
                 if (this.lastBatchNo === undefined) {
                   this.lastBatchNo = querySnapshot.docs[0].data().no;
