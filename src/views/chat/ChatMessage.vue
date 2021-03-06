@@ -6,7 +6,7 @@
         <span>{{ message.text }}</span>
       </div>
       <div v-if='message.images.length > 0' class='chat-message-images'>
-        <img v-for='image in message.images' :key='image' :src='$store.state.images.urls[`${chat.imagesPath}/${image}`]' alt='Zdjęcie do wiadomości'/>
+        <ChatImage v-for='image in message.images' :key='image' :src='$store.state.images.urls[`${chat.imagesPath}/${image}`]' alt='Zdjęcie do wiadomości'/>
       </div>
     </div>
     <MdIcon v-if='showReadIcon' class='read-icon'>visibility</MdIcon>
@@ -18,10 +18,11 @@
   import Message from "@/entities/message";
   import Chat from "@/entities/chat";
   import MdIcon from "@/components/MdIcon.vue";
+  import ChatImage from "@/views/chat/ChatImage.vue";
 
   export default defineComponent({
     name: "ChatMessage",
-    components: { MdIcon },
+    components: { ChatImage, MdIcon },
     props: {
       chat: {
         required: true,

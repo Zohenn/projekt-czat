@@ -1,25 +1,28 @@
 <template>
   <PromiseHandler :promise='initPromise' class='centered-flex'>
     <div id='chat-images' ref='container' @scroll='onScroll'>
-      <div v-for='image in images' :key='image.file' class='chat-image'>
-        <div class='chat-image-wrapper'>
-          <img :src='$store.state.images.urls[`${chat.imagesPath}/${image.file}`]' alt='Zdjęcie'/>
-          <div class='chat-image-overlay'>
-            <div class='chat-image-info'>
-              <div class='chat-image-user'>
-                <img src='../../assets/avatar.png' alt='Avatar'/>
-                <div class='text-overflow'>
+      <div v-for='image in images' :key='image.file' class='chat-image-container'>
+        <ChatImage v-slot='{ openModal }' :src='$store.state.images.urls[`${chat.imagesPath}/${image.file}`]'>
+          <div class='chat-image-wrapper' @click='openModal'>
+            <img :src='$store.state.images.urls[`${chat.imagesPath}/${image.file}`]' class='chat-square-image'
+                 alt='Zdjęcie'/>
+            <div class='chat-image-overlay'>
+              <div class='chat-image-info'>
+                <div class='chat-image-user'>
+                  <img src='../../assets/avatar.png' alt='Avatar'/>
+                  <div class='text-overflow'>
                     <span :title='chat.getNicknameFor($store.getters["users/getUserByUid"](image.author))'>
                       {{ chat.getNicknameFor($store.getters['users/getUserByUid'](image.author)) }}
                     </span>
+                  </div>
                 </div>
-              </div>
-              <div class='chat-image-date'>
-                <span>{{ formatDate(image.date) }}</span>
+                <div class='chat-image-date'>
+                  <span>{{ formatDate(image.date) }}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </ChatImage>
       </div>
       <PromiseHandler v-if='fetchMorePromise' :promise='fetchMorePromise' class='centered-flex'
                       style='height: auto; padding: .5rem 0;'/>
@@ -38,6 +41,7 @@
   import firebase from 'firebase';
   import QueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot;
   import DocumentData = firebase.firestore.DocumentData;
+  import ChatImage from "@/views/chat/ChatImage.vue";
 
   interface ImageBatch {
     no: number;
@@ -70,7 +74,7 @@
 
   export default defineComponent({
     name: "ChatImagesView",
-    components: { PromiseHandler },
+    components: { ChatImage, PromiseHandler },
     props: {
       chat: {
         required: true,
@@ -116,7 +120,8 @@
                 const newImages = [] as ChatImage[];
                 const docChange = querySnapshot.docChanges()[0];
 
-                newImages.push(...docChange.doc.data().images.filter(image => !this.images.find(i => image.file === i.file)));
+                newImages.push(...docChange.doc.data().images
+                    .filter(image => !this.images.find(i => image.file === i.file)));
 
                 await Promise.all([...newImages.map(async image => {
                   const url = await this.$store.dispatch('images/getUrlForPath', `${this.chat.imagesPath}/${image.file}`);
@@ -154,7 +159,7 @@
             .withConverter(imageBatchConverter)
             .get();
 
-        if(snapshot.empty){
+        if (snapshot.empty) {
           return;
         }
 
@@ -218,17 +223,16 @@
   })
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
   #chat-images {
     display: flex;
     flex-wrap: wrap;
     overflow: auto;
   }
 
-  .chat-image {
+  .chat-image-container {
     width: 33.33%;
     margin-bottom: .5rem;
-    //border: 1px solid var(--grey);
     padding: 1px;
 
     &:nth-child(4n + 1) {
@@ -243,14 +247,19 @@
   .chat-image-wrapper {
     position: relative;
     padding-top: 100%;
-    //border-bottom: 1px solid var(--grey);
+    cursor: pointer;
 
-    > img {
+    &:hover .chat-square-image{
+      filter: brightness(80%);
+    }
+
+    .chat-square-image {
       position: absolute;
       top: 0;
       height: 100%;
       width: 100%;
       object-fit: cover;
+      cursor: pointer;
     }
 
     .chat-image-overlay {
