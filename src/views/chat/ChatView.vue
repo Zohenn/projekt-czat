@@ -4,7 +4,7 @@
       <div id='chat-header'>
         <div id='user-info'>
           <img src='../../assets/avatar.png' alt='Avatar'/>
-          <div>
+          <div class='text-overflow'>
             <span>{{ chat.getNicknameFor(otherUser) }}</span>
           </div>
         </div>
@@ -168,12 +168,6 @@
         height: 30px;
         margin-right: 1rem;
         border-radius: 50%;
-      }
-
-      > div {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
       }
     }
   }

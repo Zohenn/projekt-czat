@@ -123,14 +123,14 @@
           const mappedImages = imageFiles.map(file => {
             return {
               author: this.$store.getters['auth/uid'],
-              date: Date,
+              date: new Date(),
               file,
             };
           });
 
           const imageBatchData = imageBatchSnapshot.docs[0]?.data();
 
-          if(imageBatchSnapshot.empty || imageBatchData.images.length >= 20){
+          if(imageBatchSnapshot.empty || imageBatchData.images.length >= 15){
             batch.set(this.chat.docReference.collection('images').doc(), {
               no: imageBatchSnapshot.empty ? 0 : imageBatchData.no + 1,
               images: mappedImages,

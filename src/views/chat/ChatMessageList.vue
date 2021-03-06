@@ -1,6 +1,6 @@
 <template>
   <PromiseHandler :promise='initPromise' class='centered-flex'>
-    <div id='chat-messages-container' v-bind='$attrs' ref='container' @scroll='onScroll'>
+    <div id='chat-messages-container' ref='container' @scroll='onScroll'>
       <ChatMessage v-for='message in pendingMessages' :key='message.id' :chat='chat' :message='message'
                    :pending='true'/>
       <template v-for='(message, i) in messages' :key='message.id'>
@@ -51,10 +51,10 @@
         initPromise: this.init(),
         messages: [] as Message[],
         lastRead: {} as { [key: string]: string },
-        lastReadSubscriber: undefined as (() => void) | undefined,
-        newMessagesSubscriber: undefined as (() => void) | undefined,
+        lastReadSubscriber: undefined as VoidCallbackOrUndef,
+        newMessagesSubscriber: undefined as VoidCallbackOrUndef,
         canFetchMore: false,
-        fetchMorePromise: undefined as Promise<void> | undefined,
+        fetchMorePromise: undefined as PromiseOrUndef<void>,
       }
     },
 
@@ -62,6 +62,19 @@
       uid(): string {
         return this.$store.getters['auth/uid'];
       }
+    },
+
+    mounted() {
+      this.initPromise.then(() => {
+        this.$nextTick(() => {
+          this.$nextTick(() => {
+            const container = this.$refs.container as HTMLElement;
+            if(container.offsetHeight === container.scrollHeight && this.canFetchMore) {
+              this.fetchMorePromise = this.fetchMore();
+            }
+          })
+        })
+      })
     },
 
     beforeUnmount() {
@@ -219,6 +232,7 @@
     display: flex;
     flex-direction: column-reverse;
     padding: .5rem 0;
+    margin-top: auto;
     overflow: auto;
 
     .chat-message-date {
