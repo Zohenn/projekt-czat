@@ -1,11 +1,11 @@
 <template>
   <slot :openModal='openModal'>
-    <img :src='src' v-bind='$attrs' class='chat-image' @click='modalOpen = true'/>
+    <img :src='src' :alt='alt' v-bind='$attrs' class='chat-image' @click='modalOpen = true'/>
   </slot>
   <teleport to='body'>
     <div v-if='modalOpen' class='image-modal'>
       <div class='image-modal-container' @click='modalOpen = false'>
-        <img :src='src' @click.stop/>
+        <img :src='src' :alt='alt' @click.stop/>
         <button class='image-modal-close-btn icon-btn' @click='modalOpen = false'><MdIcon>close</MdIcon></button>
       </div>
     </div>
@@ -24,6 +24,10 @@
         required: true,
         type: String,
       },
+      alt: {
+        required: true,
+        type: String,
+      }
     },
     data() {
       return {

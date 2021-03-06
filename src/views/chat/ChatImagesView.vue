@@ -2,7 +2,7 @@
   <PromiseHandler :promise='initPromise' class='centered-flex'>
     <div id='chat-images' ref='container' @scroll='onScroll'>
       <div v-for='image in images' :key='image.file' class='chat-image-container'>
-        <ChatImage v-slot='{ openModal }' :src='$store.state.images.urls[`${chat.imagesPath}/${image.file}`]'>
+        <ChatImage v-slot='{ openModal }' :src='$store.state.images.urls[`${chat.imagesPath}/${image.file}`]' alt='Zdjęcie'>
           <div class='chat-image-wrapper' @click='openModal'>
             <img :src='$store.state.images.urls[`${chat.imagesPath}/${image.file}`]' class='chat-square-image'
                  alt='Zdjęcie'/>
