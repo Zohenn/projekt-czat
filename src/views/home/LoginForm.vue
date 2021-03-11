@@ -1,5 +1,5 @@
 <template>
-  <form class='d-flex flex-column align-items-center w-100' @submit.prevent='signIn'>
+  <form class='d-flex flex-column align-items-center w-100' autocomplete='off' @submit.prevent='signIn'>
     <div class='d-flex flex-column w-100' style='max-width: 250px;'>
       <div class='form-row'>
         <label for='email' class='d-none'>Adres email</label>

@@ -120,6 +120,11 @@
                 const newImages = [] as ChatImage[];
                 const docChange = querySnapshot.docChanges()[0];
 
+                if(!docChange){
+                  resolve();
+                  return;
+                }
+
                 newImages.push(...docChange.doc.data().images
                     .filter(image => !this.images.find(i => image.file === i.file)));
 

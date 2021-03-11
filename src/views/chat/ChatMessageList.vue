@@ -126,13 +126,14 @@
                   }
                 });
 
-                this.loadImagesForMessages(newMessages).then(() => this.messages.unshift(...newMessages));
+                this.loadImagesForMessages(newMessages).then(() => {
+                  this.messages.unshift(...newMessages);
+                  this.updateReadStatus();
+                });
 
                 if (hasSystemMessage) {
                   this.$store.dispatch('chats/refresh', this.chat.id);
                 }
-
-                this.updateReadStatus();
               }
             });
       },

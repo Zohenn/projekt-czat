@@ -52,7 +52,7 @@ export const chats: Module<ChatsState, any> = {
     },
 
     async initLastChats({ state, rootGetters, dispatch }) {
-      if(state.lastChatsSubscription){
+      if (state.lastChatsSubscription) {
         return;
       }
 
@@ -85,7 +85,7 @@ export const chats: Module<ChatsState, any> = {
           querySnapshot.docChanges().forEach(docChange => {
             const chat = docChange.doc.data();
             const oldIndex = state.lastChats.findIndex(c => c.id === chat.id);
-            if(oldIndex !== -1){
+            if (oldIndex !== -1) {
               state.lastChats.splice(oldIndex, 1);
             }
 
@@ -93,13 +93,14 @@ export const chats: Module<ChatsState, any> = {
             newChats.push(chat);
           });
 
-          state.lastChats.unshift(...newChats);
+          Promise.all(newChats.map(chat => dispatch('users/fetchUser', chat.getOtherUserTo(uid), { root: true })))
+            .then(() => state.lastChats.unshift(...newChats));
         });
     },
 
     async refresh({ state }, id: string) {
       const snapshot = await firestore.collection('chats').doc(id).withConverter(getConverter(Chat)).get();
-      if(snapshot.exists){
+      if (snapshot.exists) {
         state.chats[id] = snapshot.data() as Chat;
       }
     },

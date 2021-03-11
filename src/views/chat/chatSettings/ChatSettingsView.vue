@@ -4,14 +4,14 @@
       <div style='max-width: 560px;'>
         <div class='chat-setting-name'>Pseudonimy</div>
         <ChatSettingNickname v-for='uid in chat.users' class='chat-setting-wrapper' :key='uid' :uid='uid'
-                             :nickname='chat.nicknames[uid] ?? ""'
+                             :nickname='chat?.nicknames?.[uid] ?? ""'
                              @setNickname='setNickname(uid, $event)'/>
       </div>
     </div>
     <div class='chat-setting'>
       <div style='max-width: 560px;'>
         <div class='chat-setting-name'>Kolor czatu</div>
-        <ChatSettingColor :color='chat.color' @setColor='setColor($event)'/>
+        <ChatSettingColor :color='chat.color ?? "#009999"' @setColor='setColor($event)'/>
       </div>
     </div>
   </div>

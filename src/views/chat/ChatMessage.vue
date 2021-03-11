@@ -114,6 +114,10 @@
         background-color: var(--primary-color);
         color: white;
       }
+
+      .chat-message-images {
+        border-radius: 8px 0 8px 8px
+      }
     }
 
     &.has-read-icon {
@@ -133,7 +137,7 @@
     .chat-message-images {
       display: flex;
       margin-bottom: .5rem;
-      border-radius: 8px 0 8px 8px;
+      border-radius: 0 8px 8px 8px;
       box-shadow: 0 1px 2px 1px var(--grey);
       overflow: hidden;
 

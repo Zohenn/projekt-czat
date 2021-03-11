@@ -70,6 +70,11 @@
     align-items: center;
     justify-content: center;
 
+    > img {
+      object-fit: cover;
+      max-height: 100%;
+    }
+
     .image-modal-close-btn {
       position: absolute;
       top: 1rem;

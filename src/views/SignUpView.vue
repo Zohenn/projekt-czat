@@ -1,6 +1,6 @@
 <template>
   <div id='sign-up-container'>
-    <form class='d-flex flex-column align-items-center w-100' ref='form' @submit.prevent='signUp'>
+    <form class='d-flex flex-column align-items-center w-100' ref='form' autocomplete='off' @submit.prevent='signUp'>
       <div class='d-flex flex-column w-100' style='max-width: 250px;'>
         <div v-for='(field, key) in fields' :key='"sign-up-" + key' class='form-row'>
           <label :for='key'>{{ field.label }}</label>

@@ -134,6 +134,10 @@
 
       setColor() {
         const { color } = this.chat;
+        if(!color){
+          return;
+        }
+
         const colorAsRgb = hexToRgb(color as string);
         if (colorAsRgb) {
           document.documentElement.style.setProperty('--primary', colorAsRgb);
@@ -206,6 +210,7 @@
       top: calc(100% - 1px);
       overflow: hidden;
       box-shadow: 0 2px 6px 1px var(--grey-text);
+      z-index: 2000;
 
       .chat-tab-menu-btn {
         display: flex;
